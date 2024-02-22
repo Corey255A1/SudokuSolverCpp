@@ -23,5 +23,11 @@ int main()
 		std::cout << "\n";
 	}
 
+	std::vector<int> validValues = board->getValidValues(8, 8);
+
+	for (int value : validValues) {
+		std::cout << value << " ";
+	}
+
 	return 0;
 }
