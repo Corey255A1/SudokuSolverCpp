@@ -6,5 +6,9 @@ private:
 	int m_size;
 public:
 	SudokuBoard(int size);
-	void setCell(int x, int y, const SudokuCell& cell);
+	int size() const;
+
+	void setCell(int column, int row, const SudokuCell& cell);
+	SudokuCell& getCell(int column, int row);
+
 };
