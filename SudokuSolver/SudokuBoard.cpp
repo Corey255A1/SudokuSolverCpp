@@ -57,6 +57,8 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 		if (columnSearch == column) { continue; }
 
 		auto cell = getCell(columnSearch, row);
+		if (!cell.isValid()) { continue; }
+
 		auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
 		if (valueIterator == validValues.end()) { continue; }
 
@@ -68,6 +70,8 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 		if (rowSearch == row) { continue; }
 
 		auto cell = getCell(column, rowSearch);
+		if (!cell.isValid()) { continue; }
+
 		auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
 		if (valueIterator == validValues.end()) { continue; }
 
@@ -86,6 +90,8 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 		{
 			if (rowSearch == row && columnSearch == column) { continue; }
 			auto cell = getCell(columnSearch, rowSearch);
+			if (!cell.isValid()) { continue; }
+
 			auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
 			if (valueIterator == validValues.end()) { continue; }
 

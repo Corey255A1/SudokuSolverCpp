@@ -18,6 +18,7 @@ public:
 	SudokuCell(int value, bool isReadOnly);
 
 	bool isReadOnly() const;
+	bool isValid() const;
 	int value() const;
 	bool setValue(int value);
 };

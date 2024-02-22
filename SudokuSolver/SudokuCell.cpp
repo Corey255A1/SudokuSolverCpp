@@ -15,6 +15,11 @@ bool SudokuCell::isReadOnly() const
 	return m_isReadOnly;
 }
 
+bool SudokuCell::isValid() const 
+{
+	return m_value != DEFAULT_CELL;
+}
+
 int SudokuCell::value() const
 {
 	return m_value;
