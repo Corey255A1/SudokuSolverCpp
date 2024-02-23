@@ -12,7 +12,7 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 	std::cout << line << "\n";
 
 	std::unique_ptr<SudokuBoard> board;
-	board = std::make_unique<SudokuBoard>(line.length());
+	board = std::make_unique<SudokuBoard>(static_cast<int>(line.length()));
 
 	int row = 0;
 	processLine(line, row, board);

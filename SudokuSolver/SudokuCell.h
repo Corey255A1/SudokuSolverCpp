@@ -2,6 +2,9 @@
 * WunderVision 2024
 * Each Cell in a board has a value, and whether or not that value can be modified to solve the game
 */
+
+#ifndef HSudokuCell
+#define HSudokuCell
 class SudokuCell {
 private:
 	int m_value;
@@ -23,3 +26,5 @@ public:
 	bool setValue(int value);
 	void clear();
 };
+
+#endif

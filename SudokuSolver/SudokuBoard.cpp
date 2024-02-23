@@ -1,6 +1,6 @@
 #include "SudokuBoard.h"
 #include <cmath>
-#include <iostream>
+#include <sstream>
 
 int SudokuBoard::findBoxSize(int size) {
 	if (size < 4) { return -1; }
@@ -15,6 +15,7 @@ int SudokuBoard::findBoxSize(int size) {
 
 	return square == size ? squareCheck : -1;
 }
+
 SudokuBoard::SudokuBoard(int size) :
 	m_size{ size },
 	m_boxSize { SudokuBoard::findBoxSize(size) }
@@ -117,4 +118,18 @@ std::set<int> SudokuBoard::getValidValues(int column, int row)
 	}
 
 	return validValues;
+}
+
+std::string SudokuBoard::toString()
+{
+	std::stringstream stringify;
+	for (int row = 0; row < m_size; row++)
+	{
+		for (int column = 0; column < m_size; column++)
+		{
+			stringify << getCell(column, row).value() << " ";
+		}
+		stringify << "\n";
+	}
+	return stringify.str();
 }
