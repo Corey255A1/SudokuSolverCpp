@@ -1,3 +1,4 @@
+#include <set>
 #include <vector>
 #include "SudokuCell.h"
 class SudokuBoard {
@@ -14,6 +15,6 @@ public:
 	void setCell(int column, int row, const SudokuCell& cell);
 	SudokuCell& getCell(int column, int row);
 
-	std::vector<int> getValidValues(int column, int row);
+	std::set<int> getValidValues(int column, int row);
 
 };

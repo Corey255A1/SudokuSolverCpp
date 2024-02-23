@@ -1,6 +1,7 @@
 #include "SudokuBoard.h"
 #include <cmath>
 #include <iostream>
+
 int SudokuBoard::findBoxSize(int size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }
@@ -46,11 +47,22 @@ SudokuCell& SudokuBoard::getCell(int column, int row)
 	return m_board[row * m_size + column];
 }
 
-std::vector<int> SudokuBoard::getValidValues(int column, int row)
+std::set<int> SudokuBoard::getValidValues(int column, int row)
 {
 	checkAndThrow(column, row);
-	std::vector<int> validValues;
-	for (int value = 1; value < m_size; value++) { validValues.push_back(value); }
+	std::set<int> validValues;
+	for (int value = 1; value <= m_size; value++) { validValues.insert(value); }
+
+	auto cell = getCell(column, row);
+	if (cell.isValid())
+	{ 
+		auto valueIterator = validValues.find(cell.value());
+		if (valueIterator != validValues.end())
+		{ 
+			validValues.erase(valueIterator);
+		}
+	}
+
 
 	// Check Row
 	for (int columnSearch = 0; columnSearch < m_size; columnSearch++) {
@@ -59,11 +71,14 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 		auto cell = getCell(columnSearch, row);
 		if (!cell.isValid()) { continue; }
 
-		auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
+		
+		auto valueIterator = validValues.find(cell.value());
 		if (valueIterator == validValues.end()) { continue; }
 
 		validValues.erase(valueIterator);
 	}
+
+	if (validValues.size() == 0) { return validValues; }
 
 	// Check Column
 	for (int rowSearch = 0; rowSearch < m_size; rowSearch++) {
@@ -72,11 +87,13 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 		auto cell = getCell(column, rowSearch);
 		if (!cell.isValid()) { continue; }
 
-		auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
+		auto valueIterator = validValues.find(cell.value());
 		if (valueIterator == validValues.end()) { continue; }
 
 		validValues.erase(valueIterator);
 	}
+
+	if (validValues.size() == 0) { return validValues; }
 
 	// Check Box
 	int boxRowStart = (row / m_boxSize) * m_boxSize;
@@ -92,7 +109,7 @@ std::vector<int> SudokuBoard::getValidValues(int column, int row)
 			auto cell = getCell(columnSearch, rowSearch);
 			if (!cell.isValid()) { continue; }
 
-			auto valueIterator = std::find(validValues.begin(), validValues.end(), cell.value());
+			auto valueIterator = validValues.find(cell.value());
 			if (valueIterator == validValues.end()) { continue; }
 
 			validValues.erase(valueIterator);

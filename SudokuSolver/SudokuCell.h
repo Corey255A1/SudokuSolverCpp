@@ -21,4 +21,5 @@ public:
 	bool isValid() const;
 	int value() const;
 	bool setValue(int value);
+	void clear();
 };

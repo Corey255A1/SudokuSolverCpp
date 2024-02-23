@@ -31,3 +31,7 @@ bool SudokuCell::setValue(int value)
 	m_value = value;
 	return true;
 }
+
+void SudokuCell::clear() {
+	setValue(DEFAULT_CELL);
+}
