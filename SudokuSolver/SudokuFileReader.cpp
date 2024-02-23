@@ -2,13 +2,14 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 {
 	std::ifstream sudokuFile(filePath);
-	if (!sudokuFile.is_open()) { throw "Sudoku File could not be opened."; }
+	if (!sudokuFile.is_open()) { throw std::runtime_error("Sudoku File could not be opened"); }
 
 	std::string line;
-	if (!std::getline(sudokuFile, line)) { throw "Not a valid Sudoku File"; }
+	if (!std::getline(sudokuFile, line)) { throw std::runtime_error("Not a valid Sudoku File"); }
 	std::cout << line << "\n";
 
 	std::unique_ptr<SudokuBoard> board;

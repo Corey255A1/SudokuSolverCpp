@@ -1,7 +1,7 @@
 #include "SudokuBoard.h"
 #include <cmath>
 #include <sstream>
-
+#include <stdexcept>
 int SudokuBoard::findBoxSize(int size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }
@@ -20,7 +20,7 @@ SudokuBoard::SudokuBoard(int size) :
 	m_size{ size },
 	m_boxSize { SudokuBoard::findBoxSize(size) }
 {
-	if (m_boxSize == -1) { throw "Invalid Sudoku Size"; }
+	if (m_boxSize == -1) { throw std::invalid_argument("Invalid Sudoku Size"); }
 
 	int multiDimension = pow(size, 2);
 	for (int i = 0; i < multiDimension; i++) {
@@ -30,7 +30,7 @@ SudokuBoard::SudokuBoard(int size) :
 
 void SudokuBoard::checkAndThrow(int column, int row) 
 {
-	if (column < 0 || row < 0 || column >= m_size || row >= m_size) { throw "Out of range"; }
+	if (column < 0 || row < 0 || column >= m_size || row >= m_size) { throw std::invalid_argument("Out of range"); }
 }
 
 int SudokuBoard::size() const {

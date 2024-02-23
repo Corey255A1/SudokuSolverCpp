@@ -14,7 +14,9 @@ int main()
 {
 	std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read("D:\\Documents\\CodeProjects\\SudokuSolver\\SudokuSolver\\sudoku_test.txt"));
 	SudokuBacktrack backTrack(board);
-	backTrack.solve();
+	if (!backTrack.solve()) {
+		std::cout << "Sudoku Board could not be solved.\n";
+	}
 	std::cout << board->toString();
 	return 0;
 }
