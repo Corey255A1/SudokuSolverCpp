@@ -10,13 +10,42 @@
 #include "SudokuFileReader.h"
 #include "SudokuBacktrack.h"
 
-int main()
+void getInteractiveFilePath(std::string& filePath) {
+	std::cout << "Sudoku File path: ";
+	std::getline(std::cin, filePath);
+}
+int main(int argc, char** argv)
 {
-	std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read("D:\\Documents\\CodeProjects\\SudokuSolver\\SudokuSolver\\sudoku_test.txt"));
-	SudokuBacktrack backTrack(board);
-	if (!backTrack.solve()) {
-		std::cout << "Sudoku Board could not be solved.\n";
+	std::string filePath;
+	bool isInteractive = false;
+	if (argc >= 2) {
+		filePath.assign(argv[1]);
 	}
-	std::cout << board->toString();
+	else {
+		getInteractiveFilePath(filePath);
+		isInteractive = true;
+	}
+
+	while (!filePath.empty()) {
+		try {
+			std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read(filePath));
+			SudokuBacktrack backTrack(board);
+			if (!backTrack.solve()) {
+				std::cout << "Sudoku Board could not be solved.\n";
+			}
+			std::cout << board->toString();
+			std::cout << "--Enter These Values--\n" << board->toStringOnlyEntries();
+		}
+		catch (std::exception e) {
+			std::cerr << e.what() << std::endl;
+		}
+
+		if (!isInteractive) {
+			break;
+		}
+		getInteractiveFilePath(filePath);
+	}
+
+	std::cout << "Have a good day!";
 	return 0;
 }

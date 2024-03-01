@@ -133,3 +133,20 @@ std::string SudokuBoard::toString()
 	}
 	return stringify.str();
 }
+
+std::string SudokuBoard::toStringOnlyEntries()
+{
+	std::stringstream stringify;
+	for (int row = 0; row < m_size; row++)
+	{
+		for (int column = 0; column < m_size; column++)
+		{
+			auto& cell = getCell(column, row);
+			if (cell.isReadOnly()) { continue; }
+
+			stringify << cell.value() << " ";
+		}
+		stringify << "\n";
+	}
+	return stringify.str();
+}

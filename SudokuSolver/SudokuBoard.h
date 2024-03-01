@@ -27,6 +27,6 @@ public:
 	std::set<int> getValidValues(int column, int row);
 
 	std::string toString();
-
+	std::string toStringOnlyEntries();
 };
 #endif
