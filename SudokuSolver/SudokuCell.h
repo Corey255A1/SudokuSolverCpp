@@ -5,9 +5,10 @@
 
 #ifndef HSudokuCell
 #define HSudokuCell
+#include "SudokuValue.h"
 class SudokuCell {
 private:
-	int m_value;
+	SudokuValue m_value;
 	bool m_isReadOnly;
 public:
 	/*
@@ -16,15 +17,16 @@ public:
 	is undefined(until C++11)defined as deleted(since C++11) if any of the following conditions is satisfied:
 	T has a non-static data member of a const-qualified non-class type (or possibly multi-dimensional array thereof).
 	*/
-	static const int DEFAULT_CELL = -1;
+	static const SudokuValue DEFAULT_CELL;
 	SudokuCell();
-	SudokuCell(int value, bool isReadOnly);
+	SudokuCell(SudokuValue value, bool isReadOnly);
 
 	bool isReadOnly() const;
 	bool isValid() const;
-	int value() const;
-	bool setValue(int value);
+	SudokuValue value() const;
+	bool setValue(SudokuValue value);
 	void clear();
+
 };
 
 #endif

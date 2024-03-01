@@ -24,7 +24,7 @@ public:
 	bool isValid();
 	void setCell(int column, int row, const SudokuCell& cell);
 	SudokuCell& getCell(int column, int row);
-	std::set<int> getValidValues(int column, int row);
+	std::set<SudokuValue> getValidValues(int column, int row);
 
 	std::string toString();
 	std::string toStringOnlyEntries();

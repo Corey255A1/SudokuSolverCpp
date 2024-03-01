@@ -33,6 +33,6 @@ void SudokuFileReader::processLine(const std::string& line, int rowIndex, std::u
 		if (line[columnIndex] == 'x') { continue; }
 		int cellValue = line[columnIndex] - '0';
 
-		board->setCell(columnIndex, rowIndex, SudokuCell(cellValue, true));
+		board->setCell(columnIndex, rowIndex, SudokuCell(SudokuValue(cellValue), true));
 	}
 }

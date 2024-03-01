@@ -1,16 +1,16 @@
 #include "SudokuBacktrack.h"
 #include <stdexcept>
 
-int SudokuBacktrack::getNextValidValue(const std::set<int>& validValues, int currentValue)
+SudokuValue SudokuBacktrack::getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue)
 {
-	for (const int& validValue : validValues)
+	for (const SudokuValue& validValue : validValues)
 	{
 		if (validValue > currentValue)
 		{
 			return validValue;
 		}
 	}
-	return -1;
+	return SudokuCell::DEFAULT_CELL;
 }
 
 SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board):
@@ -61,8 +61,8 @@ bool SudokuBacktrack::takeStep()
 			m_currentColumn++;
 			return false;
 		}
-		int cellValue = cell.value();
-		std::set<int> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
+		const auto& cellValue = cell.value();
+		std::set<SudokuValue> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
 		if (validValues.size() == 0)
 		{
 			cell.clear();
@@ -72,8 +72,8 @@ bool SudokuBacktrack::takeStep()
 
 		if (cell.isValid())
 		{
-			int nextValue = getNextValidValue(validValues, cell.value());
-			if (nextValue == -1)
+			SudokuValue nextValue = getNextValidValue(validValues, cell.value());
+			if (nextValue == SudokuCell::DEFAULT_CELL)
 			{
 				cell.clear();
 				backTrack();

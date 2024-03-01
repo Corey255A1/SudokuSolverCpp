@@ -1,10 +1,11 @@
 #include "SudokuCell.h"
+const SudokuValue SudokuCell::DEFAULT_CELL = SudokuValue();
 
 SudokuCell::SudokuCell() :
 	SudokuCell(DEFAULT_CELL, false)
 {
 }
-SudokuCell::SudokuCell(int value, bool isReadOnly) :
+SudokuCell::SudokuCell(SudokuValue value, bool isReadOnly) :
 	m_value(value),
 	m_isReadOnly(isReadOnly)
 {
@@ -20,12 +21,12 @@ bool SudokuCell::isValid() const
 	return m_value != DEFAULT_CELL;
 }
 
-int SudokuCell::value() const
+SudokuValue SudokuCell::value() const
 {
 	return m_value;
 }
 
-bool SudokuCell::setValue(int value)
+bool SudokuCell::setValue(SudokuValue value)
 {
 	if (m_isReadOnly) { return false; }
 	m_value = value;

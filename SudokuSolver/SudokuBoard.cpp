@@ -49,11 +49,12 @@ SudokuCell& SudokuBoard::getCell(int column, int row)
 	return m_board[row * m_size + column];
 }
 
-std::set<int> SudokuBoard::getValidValues(int column, int row)
+std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
 {
 	checkAndThrow(column, row);
-	std::set<int> validValues;
-	for (int value = 1; value <= m_size; value++) { validValues.insert(value); }
+	std::set<SudokuValue> validValues;
+	// To-Do .. make this not dependent on Ints
+	for (int value = 1; value <= m_size; value++) { validValues.insert(SudokuValue(value)); }
 
 	auto cell = getCell(column, row);
 	if (cell.isValid())
@@ -123,9 +124,9 @@ std::set<int> SudokuBoard::getValidValues(int column, int row)
 
 bool SudokuBoard::isValid()
 {
-	std::unordered_set<int> rows[m_size];
-	std::unordered_set<int> columns[m_size];
-	std::unordered_set<int> boxes[m_size];
+	std::unordered_set<SudokuValue> rows[m_size];
+	std::unordered_set<SudokuValue> columns[m_size];
+	std::unordered_set<SudokuValue> boxes[m_size];
 
 	for(int row = 0; row < m_size; row++) {
 		for (int column = 0; column < m_size; column++) {
