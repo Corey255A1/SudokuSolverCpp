@@ -29,6 +29,11 @@ int main(int argc, char** argv)
 	while (!filePath.empty()) {
 		try {
 			std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read(filePath));
+
+			if(!board->isValid()){
+				std::cout << "Sudoku Board is not valid\n";
+				if(!isInteractive){ break; }
+			}
 			SudokuBacktrack backTrack(board);
 			if (!backTrack.solve()) {
 				std::cout << "Sudoku Board could not be solved.\n";
@@ -40,12 +45,10 @@ int main(int argc, char** argv)
 			std::cerr << e.what() << std::endl;
 		}
 
-		if (!isInteractive) {
-			break;
-		}
+		if (!isInteractive) { break; }
 		getInteractiveFilePath(filePath);
 	}
 
-	std::cout << "Have a good day!";
+	std::cout << "Have a good day!" << std::endl;
 	return 0;
 }

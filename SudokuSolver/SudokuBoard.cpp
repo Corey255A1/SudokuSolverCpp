@@ -2,6 +2,7 @@
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_set>
 int SudokuBoard::findBoxSize(int size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }
@@ -118,6 +119,37 @@ std::set<int> SudokuBoard::getValidValues(int column, int row)
 	}
 
 	return validValues;
+}
+
+bool SudokuBoard::isValid()
+{
+	std::unordered_set<int> rows[m_size];
+	std::unordered_set<int> columns[m_size];
+	std::unordered_set<int> boxes[m_size];
+
+	for(int row = 0; row < m_size; row++) {
+		for (int column = 0; column < m_size; column++) {
+			auto cell = getCell(column, row);
+			if (!cell.isValid()) { continue; }
+
+			int boxIndex = (row / m_boxSize) * m_boxSize + (column / m_boxSize);
+			
+			auto rowItr = rows[row].find(cell.value());
+			auto columnItr = columns[column].find(cell.value());
+			auto boxItr = boxes[boxIndex].find(cell.value());
+
+			if (rowItr != rows[row].end() ||
+				columnItr != columns[column].end() ||
+				boxItr != boxes[boxIndex].end()) { 
+					return false; 
+			}
+
+			rows[row].insert(cell.value());
+			columns[column].insert(cell.value());
+			boxes[boxIndex].insert(cell.value());
+		}
+	}
+	return true;
 }
 
 std::string SudokuBoard::toString()
