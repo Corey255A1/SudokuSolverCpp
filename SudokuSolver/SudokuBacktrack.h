@@ -16,7 +16,7 @@ private:
 	size_t m_currentColumn;
 
 	void backTrack();
-	static SudokuValue getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue);
+	static std::unique_ptr<SudokuValue> getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue);
 public:
 	SudokuBacktrack(std::shared_ptr<SudokuBoard> board);
 	bool solve();

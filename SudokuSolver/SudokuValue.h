@@ -17,6 +17,9 @@ public:
     SudokuValue(std::shared_ptr<const SudokuValueRange> values, int value);
     int getValue() const { return m_value; }
     bool isDefault() const;
+    std::unique_ptr<SudokuValue> makeCopy() const { 
+        return std::make_unique<SudokuValue>(m_values, m_value); 
+    }
     std::shared_ptr<const SudokuValueRange> getValueDefinition() const { return m_values; }
 
     SudokuValue& operator=(const SudokuValue& copy);

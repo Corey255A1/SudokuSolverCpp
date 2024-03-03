@@ -42,17 +42,17 @@ size_t SudokuBoard::getSize() const {
 	return m_size;
 }
 
-void SudokuBoard::setCellValue(size_t column, size_t row, const SudokuValue& value)
+void SudokuBoard::setCellValue(size_t column, size_t row, std::unique_ptr<SudokuValue> value)
 {
 	checkAndThrow(column, row);
-	m_board[row * m_size + column].setValue(value);
+	m_board[row * m_size + column].setValue(std::move(value));
 }
 
 void SudokuBoard::setCellReadOnly(size_t column, size_t row, bool isReadOnly)
 {
 	checkAndThrow(column, row);
 	SudokuCell& oldCell = m_board[row * m_size + column];
-	m_board[row * m_size + column] = SudokuCell(oldCell.value(), isReadOnly);
+	m_board[row * m_size + column] = SudokuCell(oldCell.value().makeCopy(), isReadOnly);
 }
 
 SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
@@ -69,11 +69,11 @@ std::set<SudokuValue> SudokuBoard::getValidValues(size_t column, size_t row)
 	checkAndThrow(column, row);
 	std::set<SudokuValue> validValues;
 	// Getting closer to generic value range
-	for (SudokuValue value = m_valueRange->getMin(); value <= m_valueRange->getMax(); value++) {
+	for (auto value = m_valueRange->getMin(); value <= m_valueRange->getMax(); value++) {
 		validValues.insert(value); 
 	}
 
-	auto cell = getCell(column, row);
+	const SudokuCell& cell = getCell(column, row);
 	if (cell.isSet())
 	{
 		auto valueIterator = validValues.find(cell.value());

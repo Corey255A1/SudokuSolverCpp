@@ -23,7 +23,7 @@ public:
 	SudokuBoard(std::shared_ptr<SudokuValueRange> values);
 	size_t getSize() const;
 	bool isValid();
-	void setCellValue(size_t column, size_t row, const SudokuValue& value);
+	void setCellValue(size_t column, size_t row, std::unique_ptr<SudokuValue> value);
 	void setCellReadOnly(size_t column, size_t row, bool isReadOnly);
 	SudokuCell& getCell(size_t column, size_t row);
 	std::set<SudokuValue> getValidValues(size_t column, size_t row);

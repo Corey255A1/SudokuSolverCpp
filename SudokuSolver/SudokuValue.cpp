@@ -24,7 +24,7 @@ SudokuValue SudokuValue::operator++(int inc) {
 }
 
 SudokuValue& SudokuValue::operator++() {
-	m_value = m_values->getNext(*this).getValue();
+	m_value = m_values->getNext(*this)->getValue();
 	return *this;
 }
 
@@ -35,7 +35,7 @@ SudokuValue SudokuValue::operator--(int dec) {
 }
 
 SudokuValue& SudokuValue::operator--() {
-	m_value = m_values->getPrevious(*this).getValue();
+	m_value = m_values->getPrevious(*this)->getValue();
 	return *this;
 }
 

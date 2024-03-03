@@ -9,15 +9,23 @@
 class SudokuCell {
 private:
 	bool m_isReadOnly;
-	SudokuValue m_value;
+	std::unique_ptr<SudokuValue> m_value;
 
 public:
-	SudokuCell(SudokuValue value, bool isReadOnly);
+	SudokuCell(const SudokuCell& copy) :
+		m_isReadOnly{ copy.m_isReadOnly },
+		m_value{ copy.m_value->makeCopy() } {}
+	SudokuCell(std::unique_ptr<SudokuValue> value, bool isReadOnly);
+	SudokuCell& operator=(const SudokuCell& copy) {
+		this->m_isReadOnly = copy.m_isReadOnly;
+		this->m_value = copy.m_value->makeCopy();
+		return *this;
+	}
 
 	bool isReadOnly() const;
 	bool isSet() const;
-	SudokuValue value() const;
-	bool setValue(SudokuValue value);
+	const SudokuValue& value() const;
+	bool setValue(std::unique_ptr<SudokuValue> value);
 	void clear();
 
 };

@@ -5,13 +5,13 @@
 #include "SudokuBacktrack.h"
 #include <stdexcept>
 
-SudokuValue SudokuBacktrack::getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue)
+std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue)
 {
 	for (const SudokuValue& validValue : validValues)
 	{
 		if (validValue > currentValue)
 		{
-			return validValue;
+			return validValue.makeCopy();
 		}
 	}
 	return currentValue.getValueDefinition()->makeDefault();
@@ -78,8 +78,8 @@ bool SudokuBacktrack::takeStep()
 
 		if (cell.isSet())
 		{
-			SudokuValue nextValue = getNextValidValue(validValues, cell.value());
-			if (nextValue.isDefault())
+			auto nextValue = getNextValidValue(validValues, cell.value());
+			if (nextValue->isDefault())
 			{
 				cell.clear();
 				backTrack();
@@ -87,12 +87,12 @@ bool SudokuBacktrack::takeStep()
 			}
 			else
 			{
-				cell.setValue(nextValue);
+				cell.setValue(std::move(nextValue));
 			}
 		}
 		else
 		{
-			cell.setValue(*validValues.begin());
+			cell.setValue(validValues.begin()->makeCopy());
 		}
 		m_currentColumn++;
 	}
