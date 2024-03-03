@@ -1,62 +1,38 @@
+/*
+* WunderVision 2024
+* Eventually.. I want this to be generic.. not tied to Int
+*/
 #include <iostream>
 #include <functional>
-
+#include "SudokuValueRange.h"
+#ifndef HSudokuValue
+#define HSudokuValue
 class SudokuValue
 {
 private:
-    static const int INVALID = -1;
+    std::shared_ptr<const SudokuValueRange> m_values;
     int m_value;
 
 public:
-    SudokuValue();
-    SudokuValue(int value);
+    SudokuValue(std::shared_ptr<const SudokuValueRange> values, int value);
     int getValue() const { return m_value; }
+    bool isDefault() const;
+    std::shared_ptr<const SudokuValueRange> getValueDefinition() const { return m_values; }
 
-    int operator()(const SudokuValue &value)
-    {
-        return value.m_value;
-    }
-
-    bool operator()(const SudokuValue &left, const SudokuValue &right)
-    {
-        return left == right;
-    }
-
-    friend bool operator==(const SudokuValue &left, const SudokuValue &right)
-    {
-        return left.m_value == right.m_value;
-    }
-
-    friend bool operator!=(const SudokuValue &left, const SudokuValue &right)
-    {
-        return !(left == right);
-    }
-
-    friend bool operator<(const SudokuValue &left, const SudokuValue &right)
-    {
-        return left.m_value < right.m_value;
-    }
-
-    friend bool operator>(const SudokuValue &left, const SudokuValue &right)
-    {
-        return right.m_value < left.m_value;
-    }
-
-    friend bool operator<=(const SudokuValue &left, const SudokuValue &right)
-    {
-        return !(left > right);
-    }
-
-    friend bool operator>=(const SudokuValue &left, const SudokuValue &right)
-    {
-        return !(left < right);
-    }
-
-    friend std::ostream& operator<<(std::ostream &os, const SudokuValue &dt)
-    {
-        os << dt.m_value;
-        return os;
-    }
+    SudokuValue& operator=(const SudokuValue& copy);
+    SudokuValue operator++(int inc);
+    SudokuValue& operator++();
+    SudokuValue operator--(int dec);
+    SudokuValue& operator--();
+    int operator()(const SudokuValue& value);
+    bool operator()(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator==(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator!=(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator<(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator>(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator<=(const SudokuValue& left, const SudokuValue& right);
+    friend bool operator>=(const SudokuValue& left, const SudokuValue& right);
+    friend std::ostream& operator<<(std::ostream& os, const SudokuValue& dt);
 };
 
 template<>
@@ -76,3 +52,4 @@ struct std::equal_to<SudokuValue>
         return left == right;
     }
 };
+#endif

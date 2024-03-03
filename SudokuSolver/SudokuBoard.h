@@ -13,19 +13,21 @@
 #define HSudokuBoard
 class SudokuBoard {
 private:
+	std::shared_ptr<SudokuValueRange> m_valueRange;
 	std::vector<SudokuCell> m_board;
-	int m_size;
-	int m_boxSize;
-	void checkAndThrow(int column, int row);
+	size_t m_size;
+	size_t m_boxSize;
+	void checkAndThrow(size_t column, size_t row);
 public:
-	static int findBoxSize(int size);
-	SudokuBoard(int size);
-	int size() const;
+	static size_t findBoxSize(size_t size);
+	SudokuBoard(std::shared_ptr<SudokuValueRange> values);
+	size_t getSize() const;
 	bool isValid();
-	void setCell(int column, int row, const SudokuCell& cell);
-	SudokuCell& getCell(int column, int row);
-	std::set<SudokuValue> getValidValues(int column, int row);
-
+	void setCellValue(size_t column, size_t row, const SudokuValue& value);
+	void setCellReadOnly(size_t column, size_t row, bool isReadOnly);
+	SudokuCell& getCell(size_t column, size_t row);
+	std::set<SudokuValue> getValidValues(size_t column, size_t row);
+	std::shared_ptr<SudokuValueRange> getValueDefinition() const;
 	std::string toString();
 	std::string toStringOnlyEntries();
 };

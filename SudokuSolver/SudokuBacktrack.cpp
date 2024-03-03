@@ -1,3 +1,7 @@
+/*
+* WunderVision 2024
+* Use the backtrack algorithm to solve a sudoku board
+*/
 #include "SudokuBacktrack.h"
 #include <stdexcept>
 
@@ -10,7 +14,7 @@ SudokuValue SudokuBacktrack::getNextValidValue(const std::set<SudokuValue>& vali
 			return validValue;
 		}
 	}
-	return SudokuCell::DEFAULT_CELL;
+	return currentValue.getValueDefinition()->makeDefault();
 }
 
 SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board):
@@ -23,22 +27,22 @@ SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board):
 void SudokuBacktrack::backTrack()
 {
 	do {
-		m_currentColumn -= 1;
-		if (m_currentColumn < 0)
+		if (m_currentColumn == 0)
 		{
+			if (m_currentRow == 0) { throw std::runtime_error("Invalid Board"); }
 			m_currentRow -= 1;
-			m_currentColumn = m_board->size() - 1;
+			m_currentColumn = m_board->getSize();
 		}
-		if (m_currentRow < 0) { throw std::runtime_error("Invalid Board"); }
+		m_currentColumn -= 1;		
 	} while (m_board->getCell(m_currentColumn, m_currentRow).isReadOnly());
 }
 
 void SudokuBacktrack::reset() {
 	m_currentRow = 0;
 	m_currentColumn = 0;
-	for (int row = 0; row < m_board->size(); row++)
+	for (int row = 0; row < m_board->getSize(); row++)
 	{
-		for (int column = 0; column < m_board->size(); column++) 
+		for (int column = 0; column < m_board->getSize(); column++) 
 		{
 			SudokuCell& cell = m_board->getCell(column, row);
 			if (!cell.isReadOnly())
@@ -51,9 +55,9 @@ void SudokuBacktrack::reset() {
 
 bool SudokuBacktrack::takeStep()
 {
-	if (m_currentRow >= m_board->size()) { return true; }
+	if (m_currentRow >= m_board->getSize()) { return true; }
 
-	if (m_currentColumn < m_board->size())
+	if (m_currentColumn < m_board->getSize())
 	{
 		SudokuCell& cell = m_board->getCell(m_currentColumn, m_currentRow);
 		if (cell.isReadOnly())
@@ -62,6 +66,8 @@ bool SudokuBacktrack::takeStep()
 			return false;
 		}
 		const auto& cellValue = cell.value();
+
+
 		std::set<SudokuValue> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
 		if (validValues.size() == 0)
 		{
@@ -70,10 +76,10 @@ bool SudokuBacktrack::takeStep()
 			return false;
 		}
 
-		if (cell.isValid())
+		if (cell.isSet())
 		{
 			SudokuValue nextValue = getNextValidValue(validValues, cell.value());
-			if (nextValue == SudokuCell::DEFAULT_CELL)
+			if (nextValue.isDefault())
 			{
 				cell.clear();
 				backTrack();
@@ -96,7 +102,7 @@ bool SudokuBacktrack::takeStep()
 		m_currentRow++;
 	}
 
-	return m_currentRow >= m_board->size();
+	return m_currentRow >= m_board->getSize();
 
 }
 

@@ -32,7 +32,11 @@ int main(int argc, char** argv)
 
 			if(!board->isValid()){
 				std::cout << "Sudoku Board is not valid\n";
-				if(!isInteractive){ break; }
+				if (isInteractive) {
+					getInteractiveFilePath(filePath);
+					continue;
+				}
+				break;
 			}
 			SudokuBacktrack backTrack(board);
 			if (!backTrack.solve()) {

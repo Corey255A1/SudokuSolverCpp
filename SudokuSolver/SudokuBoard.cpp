@@ -1,67 +1,84 @@
+/*
+* WunderVision 2024
+*/
 #include "SudokuBoard.h"
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
-int SudokuBoard::findBoxSize(int size) {
+size_t SudokuBoard::findBoxSize(size_t size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }
 
-	int squareCheck = 3;
-	int square = pow(squareCheck, 2);
+	size_t squareCheck = 3;
+	size_t square = static_cast<size_t>(pow(squareCheck, 2));
 	while (square < size) {
 		squareCheck += 1;
-		square = pow(squareCheck, 2);
+		square = static_cast<size_t>(pow(squareCheck, 2));
 	}
 
-	return square == size ? squareCheck : -1;
+	return square == size ? squareCheck : 0;
 }
 
-SudokuBoard::SudokuBoard(int size) :
-	m_size{ size },
-	m_boxSize { SudokuBoard::findBoxSize(size) }
+SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values) :
+	m_size{ values->getCount() },
+	m_boxSize{ SudokuBoard::findBoxSize(m_size) },
+	m_valueRange{ values }
 {
-	if (m_boxSize == -1) { throw std::invalid_argument("Invalid Sudoku Size"); }
+	if (m_boxSize == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
 
-	int multiDimension = pow(size, 2);
-	for (int i = 0; i < multiDimension; i++) {
-		m_board.push_back(SudokuCell());
+	size_t multiDimension = static_cast<size_t>(pow(m_size, 2));
+	for (size_t i = 0; i < multiDimension; i++) {
+		m_board.push_back(SudokuCell(m_valueRange->makeDefault(), false));
 	}
 }
 
-void SudokuBoard::checkAndThrow(int column, int row) 
+void SudokuBoard::checkAndThrow(size_t column, size_t row)
 {
-	if (column < 0 || row < 0 || column >= m_size || row >= m_size) { throw std::invalid_argument("Out of range"); }
+	if (column >= m_size || row >= m_size) { throw std::invalid_argument("Out of range"); }
 }
 
-int SudokuBoard::size() const {
+size_t SudokuBoard::getSize() const {
 	return m_size;
 }
 
-void SudokuBoard::setCell(int column, int row, const SudokuCell& cell)
+void SudokuBoard::setCellValue(size_t column, size_t row, const SudokuValue& value)
 {
 	checkAndThrow(column, row);
-	m_board[row * m_size + column] = cell;
+	m_board[row * m_size + column].setValue(value);
 }
 
-SudokuCell& SudokuBoard::getCell(int column, int row)
+void SudokuBoard::setCellReadOnly(size_t column, size_t row, bool isReadOnly)
+{
+	checkAndThrow(column, row);
+	SudokuCell& oldCell = m_board[row * m_size + column];
+	m_board[row * m_size + column] = SudokuCell(oldCell.value(), isReadOnly);
+}
+
+SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
 {
 	return m_board[row * m_size + column];
 }
 
-std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
+std::shared_ptr<SudokuValueRange> SudokuBoard::getValueDefinition() const { 
+	return m_valueRange; 
+}
+
+std::set<SudokuValue> SudokuBoard::getValidValues(size_t column, size_t row)
 {
 	checkAndThrow(column, row);
 	std::set<SudokuValue> validValues;
-	// To-Do .. make this not dependent on Ints
-	for (int value = 1; value <= m_size; value++) { validValues.insert(SudokuValue(value)); }
+	// Getting closer to generic value range
+	for (SudokuValue value = m_valueRange->getMin(); value <= m_valueRange->getMax(); value++) {
+		validValues.insert(value); 
+	}
 
 	auto cell = getCell(column, row);
-	if (cell.isValid())
-	{ 
+	if (cell.isSet())
+	{
 		auto valueIterator = validValues.find(cell.value());
 		if (valueIterator != validValues.end())
-		{ 
+		{
 			validValues.erase(valueIterator);
 		}
 	}
@@ -72,9 +89,9 @@ std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
 		if (columnSearch == column) { continue; }
 
 		auto cell = getCell(columnSearch, row);
-		if (!cell.isValid()) { continue; }
+		if (!cell.isSet()) { continue; }
 
-		
+
 		auto valueIterator = validValues.find(cell.value());
 		if (valueIterator == validValues.end()) { continue; }
 
@@ -88,7 +105,7 @@ std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
 		if (rowSearch == row) { continue; }
 
 		auto cell = getCell(column, rowSearch);
-		if (!cell.isValid()) { continue; }
+		if (!cell.isSet()) { continue; }
 
 		auto valueIterator = validValues.find(cell.value());
 		if (valueIterator == validValues.end()) { continue; }
@@ -99,18 +116,18 @@ std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
 	if (validValues.size() == 0) { return validValues; }
 
 	// Check Box
-	int boxRowStart = (row / m_boxSize) * m_boxSize;
-	int boxRowEnd = boxRowStart + m_boxSize;
-	int boxColumnStart = (column / m_boxSize) * m_boxSize;
-	int boxColumnEnd = boxColumnStart + m_boxSize;
+	size_t boxRowStart = (row / m_boxSize) * m_boxSize;
+	size_t boxRowEnd = boxRowStart + m_boxSize;
+	size_t boxColumnStart = (column / m_boxSize) * m_boxSize;
+	size_t boxColumnEnd = boxColumnStart + m_boxSize;
 
-	for (int rowSearch = boxRowStart; rowSearch < boxRowEnd; rowSearch++) 
+	for (size_t rowSearch = boxRowStart; rowSearch < boxRowEnd; rowSearch++)
 	{
-		for (int columnSearch = boxColumnStart; columnSearch < boxColumnEnd; columnSearch++) 
+		for (size_t columnSearch = boxColumnStart; columnSearch < boxColumnEnd; columnSearch++)
 		{
 			if (rowSearch == row && columnSearch == column) { continue; }
 			auto cell = getCell(columnSearch, rowSearch);
-			if (!cell.isValid()) { continue; }
+			if (!cell.isSet()) { continue; }
 
 			auto valueIterator = validValues.find(cell.value());
 			if (valueIterator == validValues.end()) { continue; }
@@ -124,25 +141,25 @@ std::set<SudokuValue> SudokuBoard::getValidValues(int column, int row)
 
 bool SudokuBoard::isValid()
 {
-	std::unordered_set<SudokuValue> rows[m_size];
-	std::unordered_set<SudokuValue> columns[m_size];
-	std::unordered_set<SudokuValue> boxes[m_size];
+	std::vector<std::unordered_set<SudokuValue>> rows(m_size);
+	std::vector<std::unordered_set<SudokuValue>> columns(m_size);
+	std::vector<std::unordered_set<SudokuValue>> boxes(m_size);
 
-	for(int row = 0; row < m_size; row++) {
-		for (int column = 0; column < m_size; column++) {
+	for (size_t row = 0; row < m_size; row++) {
+		for (size_t column = 0; column < m_size; column++) {
 			auto cell = getCell(column, row);
-			if (!cell.isValid()) { continue; }
+			if (!cell.isSet()) { continue; }
 
-			int boxIndex = (row / m_boxSize) * m_boxSize + (column / m_boxSize);
-			
+			size_t boxIndex = (row / m_boxSize) * m_boxSize + (column / m_boxSize);
+
 			auto rowItr = rows[row].find(cell.value());
 			auto columnItr = columns[column].find(cell.value());
 			auto boxItr = boxes[boxIndex].find(cell.value());
 
 			if (rowItr != rows[row].end() ||
 				columnItr != columns[column].end() ||
-				boxItr != boxes[boxIndex].end()) { 
-					return false; 
+				boxItr != boxes[boxIndex].end()) {
+				return false;
 			}
 
 			rows[row].insert(cell.value());

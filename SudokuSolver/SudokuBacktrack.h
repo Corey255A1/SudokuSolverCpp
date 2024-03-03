@@ -12,8 +12,8 @@
 class SudokuBacktrack {
 private:
 	std::shared_ptr<SudokuBoard> m_board;
-	int m_currentRow;
-	int m_currentColumn;
+	size_t m_currentRow;
+	size_t m_currentColumn;
 
 	void backTrack();
 	static SudokuValue getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue);

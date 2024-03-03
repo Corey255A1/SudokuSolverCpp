@@ -1,10 +1,8 @@
+/*
+* WunderVision 2024
+*/
 #include "SudokuCell.h"
-const SudokuValue SudokuCell::DEFAULT_CELL = SudokuValue();
 
-SudokuCell::SudokuCell() :
-	SudokuCell(DEFAULT_CELL, false)
-{
-}
 SudokuCell::SudokuCell(SudokuValue value, bool isReadOnly) :
 	m_value(value),
 	m_isReadOnly(isReadOnly)
@@ -16,9 +14,9 @@ bool SudokuCell::isReadOnly() const
 	return m_isReadOnly;
 }
 
-bool SudokuCell::isValid() const 
+bool SudokuCell::isSet() const
 {
-	return m_value != DEFAULT_CELL;
+	return !m_value.isDefault();
 }
 
 SudokuValue SudokuCell::value() const
@@ -33,6 +31,8 @@ bool SudokuCell::setValue(SudokuValue value)
 	return true;
 }
 
-void SudokuCell::clear() {
-	setValue(DEFAULT_CELL);
+void SudokuCell::clear()
+{
+	if (m_isReadOnly) { return; }
+	m_value = m_value.getValueDefinition()->makeDefault();
 }
