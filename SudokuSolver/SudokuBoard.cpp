@@ -52,7 +52,7 @@ void SudokuBoard::setCellReadOnly(size_t column, size_t row, bool isReadOnly)
 {
 	checkAndThrow(column, row);
 	SudokuCell& oldCell = m_board[row * m_size + column];
-	m_board[row * m_size + column] = SudokuCell(oldCell.value().makeCopy(), isReadOnly);
+	m_board[row * m_size + column] = SudokuCell(oldCell.value()->makeCopy(), isReadOnly);
 }
 
 SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
@@ -64,13 +64,13 @@ std::shared_ptr<SudokuValueRange> SudokuBoard::getValueDefinition() const {
 	return m_valueRange; 
 }
 
-std::set<SudokuValue> SudokuBoard::getValidValues(size_t column, size_t row)
+std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValues(size_t column, size_t row)
 {
 	checkAndThrow(column, row);
-	std::set<SudokuValue> validValues;
+	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> validValues;
 	// Getting closer to generic value range
-	for (auto value = m_valueRange->getMin(); value <= m_valueRange->getMax(); value++) {
-		validValues.insert(value); 
+	for (auto value = m_valueRange->getMin(); value->lessThanOrEqual(m_valueRange->getMax().get()); value = m_valueRange->getNext(value.get())) {
+		validValues.insert(value->makeCopy()); 
 	}
 
 	const SudokuCell& cell = getCell(column, row);
@@ -141,10 +141,9 @@ std::set<SudokuValue> SudokuBoard::getValidValues(size_t column, size_t row)
 
 bool SudokuBoard::isValid()
 {
-	std::vector<std::unordered_set<SudokuValue>> rows(m_size);
-	std::vector<std::unordered_set<SudokuValue>> columns(m_size);
-	std::vector<std::unordered_set<SudokuValue>> boxes(m_size);
-
+	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> rows(m_size);
+	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> columns(m_size);
+	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> boxes(m_size);
 	for (size_t row = 0; row < m_size; row++) {
 		for (size_t column = 0; column < m_size; column++) {
 			auto cell = getCell(column, row);
@@ -162,9 +161,9 @@ bool SudokuBoard::isValid()
 				return false;
 			}
 
-			rows[row].insert(cell.value());
-			columns[column].insert(cell.value());
-			boxes[boxIndex].insert(cell.value());
+			rows[row].insert(cell.value()->makeCopy());
+			columns[column].insert(cell.value()->makeCopy());
+			boxes[boxIndex].insert(cell.value()->makeCopy());
 		}
 	}
 	return true;
@@ -177,7 +176,7 @@ std::string SudokuBoard::toString()
 	{
 		for (int column = 0; column < m_size; column++)
 		{
-			stringify << getCell(column, row).value() << " ";
+			stringify << *getCell(column, row).value() << " ";
 		}
 		stringify << "\n";
 	}
@@ -194,7 +193,7 @@ std::string SudokuBoard::toStringOnlyEntries()
 			auto& cell = getCell(column, row);
 			if (cell.isReadOnly()) { continue; }
 
-			stringify << cell.value() << " ";
+			stringify << *cell.value() << " ";
 		}
 		stringify << "\n";
 	}

@@ -1,3 +1,7 @@
+/*
+* WunderVision 2024
+* an Integer based SudokuValue 
+*/
 #ifndef HSudokuValueInt
 #define HSudokuValueInt
 #include "SudokuValue.h"

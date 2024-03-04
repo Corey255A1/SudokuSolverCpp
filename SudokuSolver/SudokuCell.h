@@ -24,7 +24,7 @@ public:
 
 	bool isReadOnly() const;
 	bool isSet() const;
-	const SudokuValue& value() const;
+	const std::unique_ptr<SudokuValue>& value() const;
 	bool setValue(std::unique_ptr<SudokuValue> value);
 	void clear();
 

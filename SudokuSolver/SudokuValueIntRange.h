@@ -1,9 +1,10 @@
 /*
 * WunderVision 2024
 */
-#include "SudokuValueRange.h"
 #ifndef HSudokuValueIntRange
 #define HSudokuValueIntRange
+#include "SudokuValueRange.h"
+#include "SudokuValueInt.h"
 class SudokuValueIntRange : public SudokuValueRange {
 private:
     int m_invalid;
@@ -18,13 +19,17 @@ public:
         m_max{max}
     {}
 
-    virtual const SudokuValue& getMin() const { return SudokuValue(shared_from_this(), m_min); }
-    virtual const SudokuValue& getMax() const { return SudokuValue(shared_from_this(), m_max); }
+    virtual std::unique_ptr<SudokuValue> getMin() const { return std::make_unique<SudokuValueInt>(shared_from_this(), m_min); }
+    virtual std::unique_ptr<SudokuValue> getMax() const { return std::make_unique<SudokuValueInt>(shared_from_this(), m_max); }
     virtual size_t getCount() const { return m_count; }
-    virtual std::unique_ptr<SudokuValue> getNext(const SudokuValue& value) const { return std::make_unique<SudokuValue>(shared_from_this(), value.getValue() + 1); }
-    virtual std::unique_ptr<SudokuValue> getPrevious(const SudokuValue& value) const { return std::make_unique<SudokuValue>(shared_from_this(), value.getValue() - 1); }
-    virtual bool isDefault(const SudokuValue& value) const { return value.getValue() == m_invalid; }
-    virtual std::unique_ptr<SudokuValue> makeDefault() const { return std::make_unique<SudokuValue>(shared_from_this(), m_invalid); }
-    std::unique_ptr<SudokuValue> makeValue(int value) const { return std::make_unique<SudokuValue>(shared_from_this(), value); }
+
+    virtual std::unique_ptr<SudokuValue> getNext(const SudokuValue* value) const { 
+        return std::make_unique<SudokuValueInt>(shared_from_this(), SudokuValueInt::castTo(value)->getValue() + 1); }
+    virtual std::unique_ptr<SudokuValue> getPrevious(const SudokuValue* value) const { 
+        return std::make_unique<SudokuValueInt>(shared_from_this(), SudokuValueInt::castTo(value)->getValue() - 1); }
+    virtual bool isDefault(const SudokuValue* value) const { 
+        return SudokuValueInt::castTo(value)->getValue() == m_invalid; }
+    virtual std::unique_ptr<SudokuValue> makeDefault() const { return std::make_unique<SudokuValueInt>(shared_from_this(), m_invalid); }
+    std::unique_ptr<SudokuValue> makeValue(int value) const { return std::make_unique<SudokuValueInt>(shared_from_this(), value); }
 };
 #endif

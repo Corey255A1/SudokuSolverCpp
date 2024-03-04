@@ -19,9 +19,9 @@ bool SudokuCell::isSet() const
 	return !m_value->isDefault();
 }
 
-const SudokuValue& SudokuCell::value() const
+const std::unique_ptr<SudokuValue>& SudokuCell::value() const
 {
-	return *m_value;
+	return m_value;
 }
 
 bool SudokuCell::setValue(std::unique_ptr<SudokuValue> value)

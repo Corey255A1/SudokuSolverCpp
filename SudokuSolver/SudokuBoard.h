@@ -26,7 +26,7 @@ public:
 	void setCellValue(size_t column, size_t row, std::unique_ptr<SudokuValue> value);
 	void setCellReadOnly(size_t column, size_t row, bool isReadOnly);
 	SudokuCell& getCell(size_t column, size_t row);
-	std::set<SudokuValue> getValidValues(size_t column, size_t row);
+	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> getValidValues(size_t column, size_t row);
 	std::shared_ptr<SudokuValueRange> getValueDefinition() const;
 	std::string toString();
 	std::string toStringOnlyEntries();

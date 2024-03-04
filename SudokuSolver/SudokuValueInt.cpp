@@ -1,3 +1,8 @@
+/*
+* WunderVision 2024
+* an Integer based SudokuValue
+*/
+
 #include "SudokuValueInt.h"
 
 const SudokuValueInt& SudokuValueInt::castTo(const SudokuValue& value) {

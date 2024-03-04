@@ -5,16 +5,16 @@
 #include "SudokuBacktrack.h"
 #include <stdexcept>
 
-std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<SudokuValue>& validValues, SudokuValue currentValue)
+std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::unique_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue)
 {
-	for (const SudokuValue& validValue : validValues)
+	for (const auto& validValue : validValues)
 	{
-		if (validValue > currentValue)
+		if (currentValue->lessThan(validValue.get()))
 		{
-			return validValue.makeCopy();
+			return validValue->makeCopy();
 		}
 	}
-	return currentValue.getValueDefinition()->makeDefault();
+	return currentValue->getValueDefinition()->makeDefault();
 }
 
 SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board):
@@ -29,7 +29,10 @@ void SudokuBacktrack::backTrack()
 	do {
 		if (m_currentColumn == 0)
 		{
-			if (m_currentRow == 0) { throw std::runtime_error("Invalid Board"); }
+			if (m_currentRow == 0) 
+			{ 
+				throw std::runtime_error("Invalid Board");
+			}
 			m_currentRow -= 1;
 			m_currentColumn = m_board->getSize();
 		}
@@ -68,7 +71,7 @@ bool SudokuBacktrack::takeStep()
 		const auto& cellValue = cell.value();
 
 
-		std::set<SudokuValue> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
+		std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
 		if (validValues.size() == 0)
 		{
 			cell.clear();
@@ -78,7 +81,7 @@ bool SudokuBacktrack::takeStep()
 
 		if (cell.isSet())
 		{
-			auto nextValue = getNextValidValue(validValues, cell.value());
+			auto nextValue = getNextValidValue(validValues, cell.value().get());
 			if (nextValue->isDefault())
 			{
 				cell.clear();
@@ -92,7 +95,7 @@ bool SudokuBacktrack::takeStep()
 		}
 		else
 		{
-			cell.setValue(validValues.begin()->makeCopy());
+			cell.setValue((*validValues.begin())->makeCopy());
 		}
 		m_currentColumn++;
 	}
@@ -111,7 +114,9 @@ bool SudokuBacktrack::solve()
 {
 	reset();
 	try {
-		while (!takeStep()) {}
+		while (!takeStep()) {
+			//std::cout << m_board->toString() << std::endl;
+		}
 	}
 	catch (std::exception e) {
 		return false;
