@@ -4,16 +4,16 @@
 */
 
 #include "SudokuValueInt.h"
-
+#include <exception>
 const SudokuValueInt& SudokuValueInt::castTo(const SudokuValue& value) {
     const auto* sudokuValueInt = dynamic_cast<const SudokuValueInt*>(&value);
-    if (sudokuValueInt == nullptr) { throw std::exception("Invalid Sudoku Value Cast: To Int"); }
+    if (sudokuValueInt == nullptr) { throw std::runtime_error("Invalid Sudoku Value Cast: To Int"); }
     return *sudokuValueInt;
 }
 
 const SudokuValueInt* SudokuValueInt::castTo(const SudokuValue* value) {
     const auto* sudokuValueInt = dynamic_cast<const SudokuValueInt*>(value);
-    if (sudokuValueInt == nullptr) { throw std::exception("Invalid Sudoku Value Cast: To Int"); }
+    if (sudokuValueInt == nullptr) { throw std::runtime_error("Invalid Sudoku Value Cast: To Int"); }
     return sudokuValueInt;
 }
 
