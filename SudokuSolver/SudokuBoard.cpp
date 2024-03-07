@@ -69,8 +69,8 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 	checkAndThrow(column, row);
 	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> validValues;
 	// Getting closer to generic value range
-	for (auto value = m_valueRange->getMin(); value->lessThanOrEqual(m_valueRange->getMax().get()); value = m_valueRange->getNext(value.get())) {
-		validValues.insert(value->makeCopy()); 
+	for (auto value = m_valueRange->getMin(); !value->isDefault(); value = m_valueRange->getNext(value.get())) {
+		validValues.insert(value->makeCopy());
 	}
 
 	const SudokuCell& cell = getCell(column, row);
@@ -82,7 +82,6 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 			validValues.erase(valueIterator);
 		}
 	}
-
 
 	// Check Row
 	for (int columnSearch = 0; columnSearch < m_size; columnSearch++) {
@@ -99,7 +98,6 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 	}
 
 	if (validValues.size() == 0) { return validValues; }
-
 	// Check Column
 	for (int rowSearch = 0; rowSearch < m_size; rowSearch++) {
 		if (rowSearch == row) { continue; }
@@ -114,7 +112,6 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 	}
 
 	if (validValues.size() == 0) { return validValues; }
-
 	// Check Box
 	size_t boxRowStart = (row / m_boxSize) * m_boxSize;
 	size_t boxRowEnd = boxRowStart + m_boxSize;
@@ -135,7 +132,6 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 			validValues.erase(valueIterator);
 		}
 	}
-
 	return validValues;
 }
 
@@ -169,9 +165,9 @@ bool SudokuBoard::isValid()
 	return true;
 }
 
-std::string SudokuBoard::toString()
+std::wstring SudokuBoard::toString()
 {
-	std::stringstream stringify;
+	std::wstringstream stringify;
 	for (int row = 0; row < m_size; row++)
 	{
 		for (int column = 0; column < m_size; column++)
@@ -183,9 +179,9 @@ std::string SudokuBoard::toString()
 	return stringify.str();
 }
 
-std::string SudokuBoard::toStringOnlyEntries()
+std::wstring SudokuBoard::toStringOnlyEntries()
 {
-	std::stringstream stringify;
+	std::wstringstream stringify;
 	for (int row = 0; row < m_size; row++)
 	{
 		for (int column = 0; column < m_size; column++)

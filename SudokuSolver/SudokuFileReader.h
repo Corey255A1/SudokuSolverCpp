@@ -6,12 +6,12 @@
 #include <string>
 #include <memory>
 #include "SudokuBoard.h"
-#include "SudokuValueIntRange.h"
+#include "SudokuValueRange.h"
 #ifndef HSudokuFileReader
 #define HSudokuFileReader
 class SudokuFileReader {
 private:
-	static void processLine(const SudokuValueIntRange& values, const std::string& line, int row, SudokuBoard* board);
+	static void processLine(const SudokuValueRange& values, const std::wstring& line, int row, SudokuBoard* board);
 public:
 	static std::unique_ptr<SudokuBoard> read(const std::string& filePath);
 };

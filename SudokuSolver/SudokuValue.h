@@ -21,9 +21,13 @@ public:
     virtual bool lessThanOrEqual(const SudokuValue* right) const = 0;
     virtual std::unique_ptr<SudokuValue> makeCopy() const = 0;
     virtual std::ostream& outToStream(std::ostream& stream) const = 0;
+    virtual std::wostream& outToStream(std::wostream& stream) const = 0;
     std::shared_ptr<const SudokuValueRange> getValueDefinition() const { return m_values; }
     bool isDefault() const;
     friend std::ostream& operator<<(std::ostream& os, const SudokuValue& dt) {
+        return dt.outToStream(os);
+    }
+    friend std::wostream& operator<<(std::wostream& os, const SudokuValue& dt) {
         return dt.outToStream(os);
     }
     //SudokuValue& operator=(const SudokuValue& copy);

@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <unordered_set>
+#include <sstream>
 class SudokuValue;
 class SudokuValueRange : public std::enable_shared_from_this<SudokuValueRange> {
 public:
@@ -17,5 +18,6 @@ public:
     virtual std::unique_ptr<SudokuValue> getPrevious(const SudokuValue* value) const = 0;
     virtual bool isDefault(const SudokuValue* value) const = 0;
     virtual std::unique_ptr<SudokuValue> makeDefault() const = 0;
+    virtual std::unique_ptr<SudokuValue> parseStream(std::wstringstream& stream) const = 0;
 };
 #endif

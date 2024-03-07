@@ -37,3 +37,8 @@ std::ostream& SudokuValueInt::outToStream(std::ostream& stream) const {
     stream << m_value;
     return stream;
 }
+
+std::wostream& SudokuValueInt::outToStream(std::wostream& stream) const {
+    stream << m_value;
+    return stream;
+}

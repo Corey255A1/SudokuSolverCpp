@@ -28,7 +28,7 @@ public:
 	SudokuCell& getCell(size_t column, size_t row);
 	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> getValidValues(size_t column, size_t row);
 	std::shared_ptr<SudokuValueRange> getValueDefinition() const;
-	std::string toString();
-	std::string toStringOnlyEntries();
+	std::wstring toString();
+	std::wstring toStringOnlyEntries();
 };
 #endif
