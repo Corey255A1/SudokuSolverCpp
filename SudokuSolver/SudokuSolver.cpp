@@ -10,8 +10,10 @@
 #include "SudokuFileReader.h"
 #include "SudokuBacktrack.h"
 #include <locale>
+#ifdef _WINDOWS
 #include <fcntl.h>
 #include <io.h>
+#endif
 void getInteractiveFilePath(std::string& filePath) {
 	std::wcout << L"Sudoku File path: ";
 	std::getline(std::cin, filePath);
