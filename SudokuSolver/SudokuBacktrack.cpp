@@ -115,7 +115,7 @@ bool SudokuBacktrack::solve()
 	reset();
 	try {
 		while (!takeStep()) {
-			//std::cout << m_board->toString() << std::endl;
+			//std::wcout << m_board->toString() << std::endl;
 		}
 	}
 	catch (std::exception e) {
