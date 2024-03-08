@@ -47,6 +47,15 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 
 	wchar_t unicodeChar;
 	sudokuFile >> unicodeChar;
+	int boxWidth = 0;
+	int boxHeight = 0;
+	auto startPos = sudokuFile.tellg();
+	if(unicodeChar == L'B'){
+		sudokuFile >> boxWidth >> boxHeight;
+		getlineTrim(sudokuFile, line);
+		startPos = sudokuFile.tellg();
+		sudokuFile >> unicodeChar;
+	}
 	bool unicodeMode = false;
 	if(unicodeChar == L'U'){
 		std::vector<std::wstring> emojis;
@@ -55,7 +64,8 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 		std::wstring characterLine;
 		getlineTrim(sudokuFile, characterLine);
 		std::wstringstream characterStream(characterLine);
-		while(!characterStream.eof()){
+		while(!characterStream.eof())
+		{
 			std::wstring character;
 			characterStream >> character;
 			emojis.push_back(character);
@@ -66,14 +76,20 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 	} 
 	else
 	{
-		sudokuFile.seekg(0);
+		sudokuFile.seekg(startPos);
 		if (!getlineTrim(sudokuFile, line)) { throw std::runtime_error("Not a valid Sudoku File"); }
-		sudokuSize = (line.length() + 1) / 2; // account for spaces
+		std::wstringstream characterStream(line);
+		while(!characterStream.eof())
+		{
+			std::wstring character;
+			characterStream >> character;
+			sudokuSize++;
+		}
 		valueTypeRange = std::make_shared<SudokuValueIntRange>(-1, 1, sudokuSize);
 	}
 	
 	std::wcout << "Board Size: " << sudokuSize << std::endl << line << std::endl;
-	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(valueTypeRange);
+	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(valueTypeRange, boxWidth, boxHeight);
 
 	int row = 0;
 	bool hasMoreRows = true;

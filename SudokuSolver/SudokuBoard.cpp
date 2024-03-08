@@ -20,12 +20,20 @@ size_t SudokuBoard::findBoxSize(size_t size) {
 	return square == size ? squareCheck : 0;
 }
 
-SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values) :
+SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWidth, size_t boxHeight) :
 	m_size{ values->getCount() },
-	m_boxSize{ SudokuBoard::findBoxSize(m_size) },
-	m_valueRange{ values }
+	m_valueRange{ values },
+	m_boxWidth{ boxWidth },
+	m_boxHeight{ boxHeight }
 {
-	if (m_boxSize == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
+	if(m_boxWidth == 0 || m_boxHeight == 0){
+		size_t square = SudokuBoard::findBoxSize(m_size);
+		if (square == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
+		m_boxWidth = square;
+		m_boxHeight = square;
+	}
+
+	if(m_boxWidth * m_boxHeight != m_size){ throw std::invalid_argument("Invalid Sudoku Box Size"); }
 
 	size_t multiDimension = static_cast<size_t>(pow(m_size, 2));
 	for (size_t i = 0; i < multiDimension; i++) {
@@ -113,10 +121,11 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 
 	if (validValues.size() == 0) { return validValues; }
 	// Check Box
-	size_t boxRowStart = (row / m_boxSize) * m_boxSize;
-	size_t boxRowEnd = boxRowStart + m_boxSize;
-	size_t boxColumnStart = (column / m_boxSize) * m_boxSize;
-	size_t boxColumnEnd = boxColumnStart + m_boxSize;
+	size_t boxRowStart = (row / m_boxHeight) * m_boxHeight;
+	size_t boxRowEnd = boxRowStart + m_boxHeight;
+
+	size_t boxColumnStart = (column / m_boxWidth) * m_boxWidth;
+	size_t boxColumnEnd = boxColumnStart + m_boxWidth;
 
 	for (size_t rowSearch = boxRowStart; rowSearch < boxRowEnd; rowSearch++)
 	{
@@ -145,7 +154,7 @@ bool SudokuBoard::isValid()
 			auto cell = getCell(column, row);
 			if (!cell.isSet()) { continue; }
 
-			size_t boxIndex = (row / m_boxSize) * m_boxSize + (column / m_boxSize);
+			size_t boxIndex = (row / m_boxHeight) * m_boxHeight + (column / m_boxWidth);
 
 			auto rowItr = rows[row].find(cell.value());
 			auto columnItr = columns[column].find(cell.value());
