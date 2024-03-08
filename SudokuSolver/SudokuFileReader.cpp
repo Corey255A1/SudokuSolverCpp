@@ -37,12 +37,12 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(intValues);
 	
 	int row = 0;
-	processLine(*emojiValues, line, row, board.get());
-	while (std::getline(sudokuFile, line) && row < sudokuSize-2)
+	processLine(*intValues, line, row, board.get());
+	while (std::getline(sudokuFile, line) && row < sudokuSize-1)
 	{
 		std::wcout << line << std::endl;
 		row += 1;
-		processLine(*emojiValues, line, row, board.get());
+		processLine(*intValues, line, row, board.get());
 	}
 	return board;
 }

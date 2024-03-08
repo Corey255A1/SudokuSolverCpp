@@ -66,28 +66,11 @@ public:
         stream.seekg(pos);
         int value = 0;
         stream >> value;
-        if(value <= 0 || value > 9)
+        if(value <= 0 || value > m_max)
         {
             return makeDefault();
         }
         return makeValue(value);
     }
-
-    // virtual std::unique_ptr<SudokuValue> parseStream(std::stringstream& stream) const
-    // {
-    //     unsigned char charValue;
-    //     stream >> charValue;
-    //     if(charValue == 'x')
-    //     {
-    //         return makeDefault();
-    //     }
-    //     if(charValue <= '0' || charValue > '9')
-    //     {
-    //         return makeDefault();
-    //     }
-
-    //     int value = static_cast<int>(charValue - '0');
-    //     return makeValue(value);
-    // }
 };
 #endif
