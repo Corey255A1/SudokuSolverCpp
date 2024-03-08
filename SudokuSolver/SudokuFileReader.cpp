@@ -12,8 +12,12 @@
 #include <codecvt>
 std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 {
-	const std::locale utf8Locale
-                = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+#ifdef _WINDOWS
+	std::locale utf8Locale = std::locale(std::locale(), new std::codecvt_utf8_utf16<wchar_t>());
+#else
+	std::locale utf8Locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+#endif
+	
             
 	std::wifstream sudokuFile(filePath, std::ios::binary);
 	sudokuFile.imbue(utf8Locale);
@@ -39,6 +43,7 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 		while(!characterStream.eof()){
 			std::wstring character;
 			characterStream >> character;
+			if (character.empty()) { continue; }
 			emojis.push_back(character);
 		}
 		valueTypeRange = std::make_shared<SudokuValueEmojiRange>(emojis);
@@ -72,7 +77,7 @@ void SudokuFileReader::processLine(const SudokuValueRange& values, const std::ws
 {
 	std::wstringstream stream(line);
 	int columnIndex = -1;
-	while(!stream.eof()){
+	while(!stream.eof() && columnIndex < board->getSize()){
 		columnIndex++;
 		auto value = values.parseStream(stream);
 		if(value->isDefault()){ continue; }
