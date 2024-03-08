@@ -45,11 +45,11 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 	std::shared_ptr<SudokuValueRange> valueTypeRange;
 	int sudokuSize = 0;
 
+	size_t startPos = sudokuFile.tellg();
 	wchar_t unicodeChar;
 	sudokuFile >> unicodeChar;
 	int boxWidth = 0;
 	int boxHeight = 0;
-	auto startPos = sudokuFile.tellg();
 	if(unicodeChar == L'B'){
 		sudokuFile >> boxWidth >> boxHeight;
 		getlineTrim(sudokuFile, line);
