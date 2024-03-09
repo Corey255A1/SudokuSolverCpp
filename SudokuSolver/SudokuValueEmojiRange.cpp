@@ -1,3 +1,6 @@
+/*
+* WunderVision 2024
+*/
 #include "SudokuValueEmojiRange.h"
 #include "SudokuValueEmoji.h"
 SudokuValueEmojiRange::SudokuValueEmojiRange(const std::vector<std::wstring>& emojis) : m_invalid{ 0 },

@@ -1,9 +1,9 @@
 ﻿/*
 * WunderVision 2024
-* A Simple Sudoku Solver. Using backtrack as the basis for the solving
-* 1) Read a Sudoku board from a file
-*  a) X is the empty cell
-*
+* A complex Sudoku Solver
+* It can read in more than just numbers,
+* it can parse boards made of emojis and 
+* process boards that are different sizes than 9x9
 */
 
 #include "SudokuSolver.h"

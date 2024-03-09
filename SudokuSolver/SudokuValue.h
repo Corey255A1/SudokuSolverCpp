@@ -14,7 +14,6 @@ protected:
 
 public:
 	SudokuValue(std::shared_ptr<const SudokuValueRange> values);
-	//int getValue() const { return m_value; }
 	virtual size_t getHash() const = 0;
 	virtual bool equals(const SudokuValue* right) const = 0;
 	virtual bool lessThan(const SudokuValue* right) const = 0;
@@ -22,7 +21,7 @@ public:
 	virtual std::unique_ptr<SudokuValue> makeCopy() const = 0;
 	virtual std::ostream& outToStream(std::ostream& stream) const = 0;
 	virtual std::wostream& outToStream(std::wostream& stream) const = 0;
-	std::shared_ptr<const SudokuValueRange> getValueDefinition() const { return m_values; }
+	std::shared_ptr<const SudokuValueRange> getValueDefinition() const;
 	bool isDefault() const;
 	friend std::ostream& operator<<(std::ostream& os, const SudokuValue& dt) {
 		return dt.outToStream(os);
@@ -30,20 +29,6 @@ public:
 	friend std::wostream& operator<<(std::wostream& os, const SudokuValue& dt) {
 		return dt.outToStream(os);
 	}
-	//SudokuValue& operator=(const SudokuValue& copy);
-	//SudokuValue operator++(int inc);
-	//SudokuValue& operator++();
-	//SudokuValue operator--(int dec);
-	//SudokuValue& operator--();
-	//int operator()(const SudokuValue& value);
-	//bool operator()(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator==(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator!=(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator<(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator>(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator<=(const SudokuValue& left, const SudokuValue& right);
-	//friend bool operator>=(const SudokuValue& left, const SudokuValue& right);
-	//friend std::ostream& operator<<(std::ostream& os, const SudokuValue& dt);
 };
 
 template<>
