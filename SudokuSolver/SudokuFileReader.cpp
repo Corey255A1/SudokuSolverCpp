@@ -101,7 +101,6 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 		hasMoreRows = getlineTrim(sudokuFile, line);
 		processLine(*valueTypeRange, line, row, board.get());
 	}
-	std::wcout << "Done Reading" << std::endl;
 	return board;
 }
 

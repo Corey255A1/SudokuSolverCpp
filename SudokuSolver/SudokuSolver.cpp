@@ -49,6 +49,7 @@ int main(int argc, char** argv)
 				break;
 			}
 			SudokuBacktrack backTrack(board);
+			std::wcout << "Looking for solution..." << std::endl;
 			if (!backTrack.solve()) {
 				std::wcout << L"Sudoku Board could not be solved" << std::endl;
 			}
