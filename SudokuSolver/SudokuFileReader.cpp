@@ -88,7 +88,7 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 		valueTypeRange = std::make_shared<SudokuValueIntRange>(-1, 1, sudokuSize);
 	}
 	
-	std::wcout << "Board Size: " << sudokuSize << std::endl << line << std::endl;
+	std::wcout << "Board Size: " << sudokuSize << std::endl;
 	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(valueTypeRange, boxWidth, boxHeight);
 
 	int row = 0;
