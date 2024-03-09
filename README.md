@@ -2,7 +2,6 @@
 A completely over engineered Sudoku Solver that uses the backtrack algorithm. 
 ```
 1 5 x x x x x 9 8
-1 5 x x x x x 9 8
 9 2 x x 5 x x 4 1
 x x 4 x x x 6 x x
 x x x 8 x 3 x x x
@@ -26,7 +25,6 @@ x x 2 x x x 9 x x
 It can parse a Sudoku board from a file that is *any* size not just 9x9.  
 ```
 Board Size: 12
-x 11 x x 12 5 3 1 8 x 6 x
 x 11 x x 12 5 3 1 8 x 6 x
 x x 7 12 6 9 x x x x x 11
 x x 1 x x x 8 x x 9 x 5
@@ -57,7 +55,6 @@ x x 8 1 x x x x 5 x 4 x
 It can also read a Sudoku board that is more than just numbers, including **emojis!**.  
 ```
 🤖 🤖 😁 🤖 😆 🤖 🤖 🤖 🤖
-🤖 🤖 😁 🤖 😆 🤖 🤖 🤖 🤖
 🤪 🤖 🤖 😝 😄 😁 😛 🤖 🤖
 🤖 🤖 😄 🤖 😃 😀 🤖 😁 🤪
 🤖 😄 😆 🤖 🤪 🤖 😁 😜 🤖
@@ -78,7 +75,6 @@ It can also read a Sudoku board that is more than just numbers, including **emoj
 😆 😃 😝 😁 😛 😄 😀 🤪 😜
 ```
 ```
-x B x x C 5 3 1 8 x 6 x
 x B x x C 5 3 1 8 x 6 x
 x x 7 C 6 9 x x x x x B
 x x 1 x x x 8 x x 9 x 5
