@@ -25,7 +25,7 @@ public:
 	virtual std::ostream& outToStream(std::ostream& stream) const;
 	virtual std::wostream& outToStream(std::wostream& stream) const;
 	virtual std::unique_ptr<SudokuValue> makeCopy() const;
-	std::shared_ptr<const SudokuValueRange> getValueDefinition() const { return m_values; }
+	std::shared_ptr<const SudokuValueRange> getValueRange() const { return m_values; }
 
 };
 #endif

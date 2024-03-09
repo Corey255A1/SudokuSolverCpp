@@ -42,5 +42,5 @@ bool SudokuCell::setValue(std::unique_ptr<SudokuValue> value)
 void SudokuCell::clear()
 {
 	if (m_isReadOnly) { return; }
-	m_value = m_value->getValueDefinition()->makeDefault();
+	m_value = m_value->getValueRange()->makeDefault();
 }

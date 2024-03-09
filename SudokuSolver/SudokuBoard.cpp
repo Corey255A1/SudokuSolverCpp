@@ -26,6 +26,8 @@ SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWid
 	m_boxWidth{ boxWidth },
 	m_boxHeight{ boxHeight }
 {
+	if (m_size == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
+
 	if (m_boxWidth == 0 || m_boxHeight == 0) {
 		size_t square = SudokuBoard::findBoxSize(m_size);
 		if (square == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
@@ -68,7 +70,7 @@ SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
 	return m_board[row * m_size + column];
 }
 
-std::shared_ptr<SudokuValueRange> SudokuBoard::getValueDefinition() const {
+std::shared_ptr<SudokuValueRange> SudokuBoard::getValueRange() const {
 	return m_valueRange;
 }
 

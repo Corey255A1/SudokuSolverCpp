@@ -21,7 +21,7 @@ public:
 	virtual std::unique_ptr<SudokuValue> makeCopy() const = 0;
 	virtual std::ostream& outToStream(std::ostream& stream) const = 0;
 	virtual std::wostream& outToStream(std::wostream& stream) const = 0;
-	std::shared_ptr<const SudokuValueRange> getValueDefinition() const;
+	std::shared_ptr<const SudokuValueRange> getValueRange() const;
 	bool isDefault() const;
 	friend std::ostream& operator<<(std::ostream& os, const SudokuValue& dt) {
 		return dt.outToStream(os);

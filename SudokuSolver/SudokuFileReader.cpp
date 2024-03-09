@@ -25,6 +25,83 @@ bool getlineTrim(std::wifstream& stream, std::wstring& line) {
 	return !isEnd;
 }
 
+void SudokuFileReader::getBoxSize(std::wifstream& stream, int& width, int& height)
+{
+	stream >> width >> height;
+	std::wstring endOfLine;
+	std::getline(stream, endOfLine);
+}
+
+size_t SudokuFileReader::getBoardSize(std::wifstream& stream) {
+	std::streampos startPos = stream.tellg();
+	size_t size = 0;
+	std::wstring line;
+	getlineTrim(stream, line);
+	std::wstringstream characterStream(line);
+	while (!characterStream.eof())
+	{
+		std::wstring character;
+		characterStream >> character;
+		size++;
+	}
+	stream.seekg(startPos);
+	return size;
+}
+
+std::vector<std::wstring> SudokuFileReader::getEmojiList(std::wifstream& stream)
+{
+	// L"🤖", L"😀", L"😃", L"😄", L"😁", L"😆", L"😛", L"😝", L"😜", L"🤪"
+	std::vector<std::wstring> emojis;
+	std::wstring characterLine;
+	getlineTrim(stream, characterLine);
+	std::wstringstream characterStream(characterLine);
+	while (!characterStream.eof())
+	{
+		std::wstring character;
+		characterStream >> character;
+		emojis.push_back(character);
+	}
+	return emojis;
+}
+
+void SudokuFileReader::processHeader(std::wifstream& stream, SudokuFileReader::Header& header) 
+{
+	while (!stream.eof())
+	{
+		wchar_t unicodeChar;
+		std::streampos startPos = stream.tellg();
+		stream >> unicodeChar;
+		if (unicodeChar == L'B')
+		{
+			getBoxSize(stream, header.boxWidth, header.boxHeight);
+		}
+		else if (unicodeChar == L'U')
+		{
+			header.valueTypeRange = std::make_shared<SudokuValueEmojiRange>(getEmojiList(stream));
+		}
+		else
+		{
+			stream.seekg(startPos);
+			break;
+		}
+	}
+}
+
+void SudokuFileReader::processLine(SudokuBoard& board, const std::wstring& line, int rowIndex)
+{
+	std::wstringstream stream(line);
+	auto values = board.getValueRange();
+	int columnIndex = 0;
+	while (!stream.eof() && columnIndex < board.getSize()) {
+		auto value = values->parseStream(stream);
+		if (!value->isDefault()) {
+			board.setCellValue(columnIndex, rowIndex, std::move(value));
+			board.setCellReadOnly(columnIndex, rowIndex, true);
+		}
+		columnIndex++;
+	}
+}
+
 std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 {
 #ifdef _WINDOWS
@@ -41,79 +118,27 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 	//std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> converter;
 	//std::wstring utfContents = converter.from_bytes(fileContents.str());
 	
-	std::wstring line;
-	std::shared_ptr<SudokuValueRange> valueTypeRange;
-	int sudokuSize = 0;
+	SudokuFileReader::Header header;
+	processHeader(sudokuFile, header);
 
-	size_t startPos = sudokuFile.tellg();
-	wchar_t unicodeChar;
-	sudokuFile >> unicodeChar;
-	int boxWidth = 0;
-	int boxHeight = 0;
-	if(unicodeChar == L'B'){
-		sudokuFile >> boxWidth >> boxHeight;
-		getlineTrim(sudokuFile, line);
-		startPos = sudokuFile.tellg();
-		sudokuFile >> unicodeChar;
-	}
-	bool unicodeMode = false;
-	if(unicodeChar == L'U'){
-		std::vector<std::wstring> emojis;
-		// L"🤖", L"😀", L"😃", L"😄", L"😁", L"😆", L"😛", L"😝", L"😜", L"🤪"
-		
-		std::wstring characterLine;
-		getlineTrim(sudokuFile, characterLine);
-		std::wstringstream characterStream(characterLine);
-		while(!characterStream.eof())
-		{
-			std::wstring character;
-			characterStream >> character;
-			emojis.push_back(character);
-		}
-		valueTypeRange = std::make_shared<SudokuValueEmojiRange>(emojis);
-		sudokuSize = emojis.size() - 1;
-		if (!getlineTrim(sudokuFile, line)) { throw std::runtime_error("Not a valid Sudoku File"); }
-	} 
-	else
+	if(!header.valueTypeRange)
 	{
-		sudokuFile.seekg(startPos);
-		if (!getlineTrim(sudokuFile, line)) { throw std::runtime_error("Not a valid Sudoku File"); }
-		std::wstringstream characterStream(line);
-		while(!characterStream.eof())
-		{
-			std::wstring character;
-			characterStream >> character;
-			sudokuSize++;
-		}
-		valueTypeRange = std::make_shared<SudokuValueIntRange>(-1, 1, sudokuSize);
+		int sudokuSize = getBoardSize(sudokuFile);
+		if (sudokuSize == 0) { throw std::runtime_error("Invalid Board Size"); }
+
+		header.valueTypeRange = std::make_shared<SudokuValueIntRange>(-1, 1, sudokuSize);
 	}
 	
-	std::wcout << "Board Size: " << sudokuSize << std::endl;
-	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(valueTypeRange, boxWidth, boxHeight);
+	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(header.valueTypeRange, header.boxWidth, header.boxHeight);
 
+	std::wstring line;
 	int row = 0;
 	bool hasMoreRows = true;
-	processLine(*valueTypeRange, line, row, board.get());
-	while (hasMoreRows && row < sudokuSize-1)
-	{
-		row += 1;
-		std::wcout << line << std::endl;
+	while (hasMoreRows && row < header.valueTypeRange->getCount())
+	{		
 		hasMoreRows = getlineTrim(sudokuFile, line);
-		processLine(*valueTypeRange, line, row, board.get());
+		processLine(*board, line, row);
+		row += 1;
 	}
 	return board;
-}
-
-void SudokuFileReader::processLine(const SudokuValueRange& values, const std::wstring& line, int rowIndex, SudokuBoard* board)
-{
-	std::wstringstream stream(line);
-	int columnIndex = 0;
-	while(!stream.eof() && columnIndex < board->getSize()){
-		auto value = values.parseStream(stream);
-		if (!value->isDefault()) {
-			board->setCellValue(columnIndex, rowIndex, std::move(value));
-			board->setCellReadOnly(columnIndex, rowIndex, true);
-		}
-		columnIndex++;
-	}
 }

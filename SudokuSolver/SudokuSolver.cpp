@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	while (!filePath.empty()) {
 		try {
 			std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read(filePath));
-
+			std::wcout << board->toString();
 			if (!board->isValid()) {
 				std::wcout << L"Sudoku Board is not valid\n";
 				if (isInteractive) {

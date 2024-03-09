@@ -14,7 +14,7 @@ std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<s
 			return validValue->makeCopy();
 		}
 	}
-	return currentValue->getValueDefinition()->makeDefault();
+	return currentValue->getValueRange()->makeDefault();
 }
 
 SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) :
@@ -114,9 +114,7 @@ bool SudokuBacktrack::solve()
 {
 	reset();
 	try {
-		while (!takeStep()) {
-			//std::wcout << m_board->toString() << std::endl;
-		}
+		while (!takeStep()) {}
 	}
 	catch (std::exception e) {
 		return false;

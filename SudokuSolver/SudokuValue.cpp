@@ -11,6 +11,6 @@ bool SudokuValue::isDefault() const {
 	return m_values->isDefault(this);
 }
 
-std::shared_ptr<const SudokuValueRange> SudokuValue::getValueDefinition() const {
+std::shared_ptr<const SudokuValueRange> SudokuValue::getValueRange() const {
 	return m_values;
 }
