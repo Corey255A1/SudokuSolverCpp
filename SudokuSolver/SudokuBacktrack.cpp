@@ -17,7 +17,7 @@ std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<s
 	return currentValue->getValueDefinition()->makeDefault();
 }
 
-SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board):
+SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) :
 	m_board(board),
 	m_currentRow(0),
 	m_currentColumn(0)
@@ -29,14 +29,14 @@ void SudokuBacktrack::backTrack()
 	do {
 		if (m_currentColumn == 0)
 		{
-			if (m_currentRow == 0) 
-			{ 
+			if (m_currentRow == 0)
+			{
 				throw std::runtime_error("Invalid Board");
 			}
 			m_currentRow -= 1;
 			m_currentColumn = m_board->getSize();
 		}
-		m_currentColumn -= 1;		
+		m_currentColumn -= 1;
 	} while (m_board->getCell(m_currentColumn, m_currentRow).isReadOnly());
 }
 
@@ -45,7 +45,7 @@ void SudokuBacktrack::reset() {
 	m_currentColumn = 0;
 	for (int row = 0; row < m_board->getSize(); row++)
 	{
-		for (int column = 0; column < m_board->getSize(); column++) 
+		for (int column = 0; column < m_board->getSize(); column++)
 		{
 			SudokuCell& cell = m_board->getCell(column, row);
 			if (!cell.isReadOnly())
@@ -99,7 +99,7 @@ bool SudokuBacktrack::takeStep()
 		}
 		m_currentColumn++;
 	}
-	else 
+	else
 	{
 		m_currentColumn = 0;
 		m_currentRow++;

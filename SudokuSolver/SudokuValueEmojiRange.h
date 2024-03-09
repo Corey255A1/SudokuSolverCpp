@@ -1,11 +1,12 @@
 /*
  * WunderVision 2024
+ * Range of values based on what was going to be originally emojis, but
+ * can actually be any range of strings
  */
 #ifndef HSudokuValueEmojiRange
 #define HSudokuValueEmojiRange
+#include <vector>
 #include "SudokuValueRange.h"
-#include "SudokuValueEmoji.h"
-#include <unordered_map>
 class SudokuValueEmojiRange : public SudokuValueRange
 {
 private:

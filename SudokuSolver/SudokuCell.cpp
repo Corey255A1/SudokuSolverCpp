@@ -5,8 +5,16 @@
 
 SudokuCell::SudokuCell(std::unique_ptr<SudokuValue> value, bool isReadOnly) :
 	m_value(std::move(value)),
-	m_isReadOnly(isReadOnly)
-{
+	m_isReadOnly(isReadOnly) {}
+
+SudokuCell::SudokuCell(const SudokuCell& copy) :
+	m_isReadOnly{ copy.m_isReadOnly },
+	m_value{ copy.m_value->makeCopy() } {}
+
+SudokuCell& SudokuCell::operator=(const SudokuCell& copy) {
+	this->m_isReadOnly = copy.m_isReadOnly;
+	this->m_value = copy.m_value->makeCopy();
+	return *this;
 }
 
 bool SudokuCell::isReadOnly() const

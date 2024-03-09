@@ -18,6 +18,7 @@ void getInteractiveFilePath(std::string& filePath) {
 	std::wcout << L"Sudoku File path: ";
 	std::getline(std::cin, filePath);
 }
+
 int main(int argc, char** argv)
 {
 	std::setlocale(LC_ALL, "");
@@ -39,7 +40,7 @@ int main(int argc, char** argv)
 		try {
 			std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read(filePath));
 
-			if(!board->isValid()){
+			if (!board->isValid()) {
 				std::wcout << L"Sudoku Board is not valid\n";
 				if (isInteractive) {
 					getInteractiveFilePath(filePath);

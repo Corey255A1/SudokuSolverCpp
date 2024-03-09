@@ -1,4 +1,5 @@
 #include "SudokuValueIntRange.h"
+#include "SudokuValueInt.h"
 SudokuValueIntRange::SudokuValueIntRange(int invalid, int min, int max) : 
 	m_invalid(invalid),
 	m_count{ static_cast<size_t>(max - min + 1) },

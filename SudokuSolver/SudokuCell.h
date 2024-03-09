@@ -12,22 +12,15 @@ private:
 	std::unique_ptr<SudokuValue> m_value;
 
 public:
-	SudokuCell(const SudokuCell& copy) :
-		m_isReadOnly{ copy.m_isReadOnly },
-		m_value{ copy.m_value->makeCopy() } {}
+	SudokuCell(const SudokuCell& copy);
 	SudokuCell(std::unique_ptr<SudokuValue> value, bool isReadOnly);
-	SudokuCell& operator=(const SudokuCell& copy) {
-		this->m_isReadOnly = copy.m_isReadOnly;
-		this->m_value = copy.m_value->makeCopy();
-		return *this;
-	}
+	SudokuCell& operator=(const SudokuCell& copy);
 
 	bool isReadOnly() const;
 	bool isSet() const;
 	const std::unique_ptr<SudokuValue>& value() const;
 	bool setValue(std::unique_ptr<SudokuValue> value);
 	void clear();
-
 };
 
 #endif

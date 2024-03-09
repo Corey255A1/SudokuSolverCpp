@@ -26,14 +26,14 @@ SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWid
 	m_boxWidth{ boxWidth },
 	m_boxHeight{ boxHeight }
 {
-	if(m_boxWidth == 0 || m_boxHeight == 0){
+	if (m_boxWidth == 0 || m_boxHeight == 0) {
 		size_t square = SudokuBoard::findBoxSize(m_size);
 		if (square == 0) { throw std::invalid_argument("Invalid Sudoku Size"); }
 		m_boxWidth = square;
 		m_boxHeight = square;
 	}
 
-	if(m_boxWidth * m_boxHeight != m_size){ throw std::invalid_argument("Invalid Sudoku Box Size"); }
+	if (m_boxWidth * m_boxHeight != m_size) { throw std::invalid_argument("Invalid Sudoku Box Size"); }
 
 	size_t multiDimension = static_cast<size_t>(pow(m_size, 2));
 	for (size_t i = 0; i < multiDimension; i++) {
@@ -68,8 +68,8 @@ SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
 	return m_board[row * m_size + column];
 }
 
-std::shared_ptr<SudokuValueRange> SudokuBoard::getValueDefinition() const { 
-	return m_valueRange; 
+std::shared_ptr<SudokuValueRange> SudokuBoard::getValueDefinition() const {
+	return m_valueRange;
 }
 
 std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValues(size_t column, size_t row)
