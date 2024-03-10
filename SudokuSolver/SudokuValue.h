@@ -6,6 +6,7 @@
 #define HSudokuValue
 #include <iostream>
 #include <functional>
+#include <memory>
 
 class SudokuValueRange;
 class SudokuValue
