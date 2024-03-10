@@ -2,19 +2,20 @@
 * WunderVision 2024
 * Use the backtrack algorithm to solve a sudoku board
 */
-#include "SudokuBacktrack.h"
 #include <stdexcept>
+#include "SudokuBacktrack.h"
+#include "SudokuValueRange.h"
 
-std::unique_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::unique_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue)
+std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::shared_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue)
 {
 	for (const auto& validValue : validValues)
 	{
 		if (currentValue->lessThan(validValue.get()))
 		{
-			return validValue->makeCopy();
+			return validValue;
 		}
 	}
-	return currentValue->getValueRange()->makeDefault();
+	return currentValue->getValueRange()->getDefault();
 }
 
 SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) :
@@ -71,7 +72,7 @@ bool SudokuBacktrack::takeStep()
 		const auto& cellValue = cell.value();
 
 
-		std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
+		std::set<std::shared_ptr<SudokuValue>, SudokuValueLT> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
 		if (validValues.size() == 0)
 		{
 			cell.clear();
@@ -90,12 +91,12 @@ bool SudokuBacktrack::takeStep()
 			}
 			else
 			{
-				cell.setValue(std::move(nextValue));
+				cell.setValue(nextValue);
 			}
 		}
 		else
 		{
-			cell.setValue((*validValues.begin())->makeCopy());
+			cell.setValue(*(validValues.begin()));
 		}
 		m_currentColumn++;
 	}

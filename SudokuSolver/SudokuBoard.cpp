@@ -1,11 +1,12 @@
 /*
 * WunderVision 2024
 */
-#include "SudokuBoard.h"
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
+#include "SudokuBoard.h"
+#include "SudokuValueRange.h"
 size_t SudokuBoard::findBoxSize(size_t size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }
@@ -39,7 +40,7 @@ SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWid
 
 	size_t multiDimension = static_cast<size_t>(pow(m_size, 2));
 	for (size_t i = 0; i < multiDimension; i++) {
-		m_board.push_back(SudokuCell(m_valueRange->makeDefault(), false));
+		m_board.push_back(SudokuCell(m_valueRange->getDefault(), false));
 	}
 }
 
@@ -52,10 +53,10 @@ size_t SudokuBoard::getSize() const {
 	return m_size;
 }
 
-void SudokuBoard::setCellValue(size_t column, size_t row, std::unique_ptr<SudokuValue> value)
+void SudokuBoard::setCellValue(size_t column, size_t row, std::shared_ptr<SudokuValue> value)
 {
 	checkAndThrow(column, row);
-	m_board[row * m_size + column].setValue(std::move(value));
+	m_board[row * m_size + column].setValue(value);
 }
 
 void SudokuBoard::setCellReadOnly(size_t column, size_t row, bool isReadOnly)
@@ -70,18 +71,14 @@ SudokuCell& SudokuBoard::getCell(size_t column, size_t row)
 	return m_board[row * m_size + column];
 }
 
-std::shared_ptr<SudokuValueRange> SudokuBoard::getValueRange() const {
+const std::shared_ptr<SudokuValueRange>& SudokuBoard::getValueRange() const {
 	return m_valueRange;
 }
 
-std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValues(size_t column, size_t row)
+std::set<std::shared_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValues(size_t column, size_t row)
 {
 	checkAndThrow(column, row);
-	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> validValues;
-	// Getting closer to generic value range
-	for (auto value = m_valueRange->getMin(); !value->isDefault(); value = m_valueRange->getNext(value.get())) {
-		validValues.insert(value->makeCopy());
-	}
+	auto validValues = m_valueRange->getValueSet();
 
 	const SudokuCell& cell = getCell(column, row);
 	if (cell.isSet())
@@ -97,7 +94,7 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 	for (int columnSearch = 0; columnSearch < m_size; columnSearch++) {
 		if (columnSearch == column) { continue; }
 
-		auto cell = getCell(columnSearch, row);
+		SudokuCell& cell = getCell(columnSearch, row);
 		if (!cell.isSet()) { continue; }
 
 
@@ -112,7 +109,7 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 	for (int rowSearch = 0; rowSearch < m_size; rowSearch++) {
 		if (rowSearch == row) { continue; }
 
-		auto cell = getCell(column, rowSearch);
+		SudokuCell& cell = getCell(column, rowSearch);
 		if (!cell.isSet()) { continue; }
 
 		auto valueIterator = validValues.find(cell.value());
@@ -134,7 +131,7 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 		for (size_t columnSearch = boxColumnStart; columnSearch < boxColumnEnd; columnSearch++)
 		{
 			if (rowSearch == row && columnSearch == column) { continue; }
-			auto cell = getCell(columnSearch, rowSearch);
+			SudokuCell& cell = getCell(columnSearch, rowSearch);
 			if (!cell.isSet()) { continue; }
 
 			auto valueIterator = validValues.find(cell.value());
@@ -148,12 +145,12 @@ std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> SudokuBoard::getValidValue
 
 bool SudokuBoard::isValid()
 {
-	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> rows(m_size);
-	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> columns(m_size);
-	std::vector<std::unordered_set<std::unique_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> boxes(m_size);
+	std::vector<std::unordered_set<std::shared_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> rows(m_size);
+	std::vector<std::unordered_set<std::shared_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> columns(m_size);
+	std::vector<std::unordered_set<std::shared_ptr<SudokuValue>, SudokuValueOps, SudokuValueOps>> boxes(m_size);
 	for (size_t row = 0; row < m_size; row++) {
 		for (size_t column = 0; column < m_size; column++) {
-			auto cell = getCell(column, row);
+			SudokuCell& cell = getCell(column, row);
 			if (!cell.isSet()) { continue; }
 
 			size_t boxIndex = (row / m_boxHeight) * m_boxHeight + (column / m_boxWidth);
@@ -197,7 +194,7 @@ std::wstring SudokuBoard::toStringOnlyEntries()
 	{
 		for (int column = 0; column < m_size; column++)
 		{
-			auto& cell = getCell(column, row);
+			SudokuCell& cell = getCell(column, row);
 			if (cell.isReadOnly()) { continue; }
 
 			stringify << *cell.value() << " ";

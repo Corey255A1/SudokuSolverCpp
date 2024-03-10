@@ -6,7 +6,8 @@
 #define HSudokuValue
 #include <iostream>
 #include <functional>
-#include "SudokuValueRange.h"
+
+class SudokuValueRange;
 class SudokuValue
 {
 protected:
@@ -54,7 +55,16 @@ struct SudokuValueOps {
 	{
 		return value->getHash();
 	}
-	bool operator()(const std::unique_ptr<SudokuValue>& left, const std::unique_ptr<SudokuValue>& right) const
+	bool operator()(const std::unique_ptr<SudokuValue>& left, const std::shared_ptr<SudokuValue>& right) const
+	{
+		return left->equals(right.get());
+	}
+
+	size_t operator()(const std::shared_ptr<SudokuValue>& value) const
+	{
+		return value->getHash();
+	}
+	bool operator()(const std::shared_ptr<SudokuValue>& left, const std::shared_ptr<SudokuValue>& right) const
 	{
 		return left->equals(right.get());
 	}
@@ -68,6 +78,16 @@ struct SudokuValueLT {
 		return left->lessThan(right);
 	}
 	bool operator()(const SudokuValue* left, const std::unique_ptr<SudokuValue>& right) const {
+		return left->lessThan(right.get());
+	}
+
+	bool operator()(const std::shared_ptr<SudokuValue>& left, const std::shared_ptr<SudokuValue>& right) const {
+		return left->lessThan(right.get());
+	}
+	bool operator()(const std::shared_ptr<SudokuValue>& left, const SudokuValue* right) const {
+		return left->lessThan(right);
+	}
+	bool operator()(const SudokuValue* left, const std::shared_ptr<SudokuValue>& right) const {
 		return left->lessThan(right.get());
 	}
 };

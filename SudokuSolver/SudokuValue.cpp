@@ -2,7 +2,7 @@
 * WunderVision 2024
 */
 #include "SudokuValue.h"
-
+#include "SudokuValueIntRange.h"
 SudokuValue::SudokuValue(std::shared_ptr<const SudokuValueRange> values) :
 	m_values{ values }
 {}

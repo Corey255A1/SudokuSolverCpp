@@ -5,6 +5,8 @@
 #ifndef HSudokuValueEmoji
 #define HSudokuValueEmoji
 #include "SudokuValue.h"
+#include "SudokuValueRange.h"
+
 class SudokuValueEmoji : public SudokuValue
 {
 private:

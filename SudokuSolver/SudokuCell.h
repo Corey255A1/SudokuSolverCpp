@@ -6,20 +6,21 @@
 #ifndef HSudokuCell
 #define HSudokuCell
 #include "SudokuValue.h"
+
 class SudokuCell {
 private:
 	bool m_isReadOnly;
-	std::unique_ptr<SudokuValue> m_value;
+	std::shared_ptr<SudokuValue> m_value;
 
 public:
 	SudokuCell(const SudokuCell& copy);
-	SudokuCell(std::unique_ptr<SudokuValue> value, bool isReadOnly);
+	SudokuCell(std::shared_ptr<SudokuValue> value, bool isReadOnly);
 	SudokuCell& operator=(const SudokuCell& copy);
 
 	bool isReadOnly() const;
 	bool isSet() const;
-	const std::unique_ptr<SudokuValue>& value() const;
-	bool setValue(std::unique_ptr<SudokuValue> value);
+	const std::shared_ptr<SudokuValue>& value() const;
+	bool setValue(std::shared_ptr<SudokuValue> value);
 	void clear();
 };
 

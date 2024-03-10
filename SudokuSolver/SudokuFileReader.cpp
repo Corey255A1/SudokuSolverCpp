@@ -77,7 +77,9 @@ void SudokuFileReader::processHeader(std::wifstream& stream, SudokuFileReader::H
 		}
 		else if (unicodeChar == L'U')
 		{
-			header.valueTypeRange = std::make_shared<SudokuValueEmojiRange>(getEmojiList(stream));
+			auto range = std::make_shared<SudokuValueEmojiRange>();
+			range->setRange(getEmojiList(stream));
+			header.valueTypeRange = range;
 		}
 		else
 		{
@@ -90,12 +92,12 @@ void SudokuFileReader::processHeader(std::wifstream& stream, SudokuFileReader::H
 void SudokuFileReader::processLine(SudokuBoard& board, const std::wstring& line, int rowIndex)
 {
 	std::wstringstream stream(line);
-	auto values = board.getValueRange();
+	auto& values = board.getValueRange();
 	int columnIndex = 0;
 	while (!stream.eof() && columnIndex < board.getSize()) {
 		auto value = values->parseStream(stream);
 		if (!value->isDefault()) {
-			board.setCellValue(columnIndex, rowIndex, std::move(value));
+			board.setCellValue(columnIndex, rowIndex, value);
 			board.setCellReadOnly(columnIndex, rowIndex, true);
 		}
 		columnIndex++;
@@ -126,7 +128,9 @@ std::unique_ptr<SudokuBoard> SudokuFileReader::read(const std::string& filePath)
 		int sudokuSize = getBoardSize(sudokuFile);
 		if (sudokuSize == 0) { throw std::runtime_error("Invalid Board Size"); }
 
-		header.valueTypeRange = std::make_shared<SudokuValueIntRange>(-1, 1, sudokuSize);
+		auto range = std::make_shared<SudokuValueIntRange>();
+		range->setRange(-1, 1, sudokuSize);
+		header.valueTypeRange = range;
 	}
 	
 	std::unique_ptr<SudokuBoard> board = std::make_unique<SudokuBoard>(header.valueTypeRange, header.boxWidth, header.boxHeight);

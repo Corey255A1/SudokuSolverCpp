@@ -4,13 +4,13 @@
 * data about the board state
 */
 
+#ifndef HSudokuBoard
+#define HSudokuBoard
 #include <set>
 #include <vector>
 #include <string>
 #include "SudokuCell.h"
 
-#ifndef HSudokuBoard
-#define HSudokuBoard
 class SudokuBoard {
 private:
 	std::shared_ptr<SudokuValueRange> m_valueRange;
@@ -24,11 +24,11 @@ public:
 	SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWidth = 0, size_t boxHeight = 0);
 	size_t getSize() const;
 	bool isValid();
-	void setCellValue(size_t column, size_t row, std::unique_ptr<SudokuValue> value);
+	void setCellValue(size_t column, size_t row, std::shared_ptr<SudokuValue> value);
 	void setCellReadOnly(size_t column, size_t row, bool isReadOnly);
 	SudokuCell& getCell(size_t column, size_t row);
-	std::set<std::unique_ptr<SudokuValue>, SudokuValueLT> getValidValues(size_t column, size_t row);
-	std::shared_ptr<SudokuValueRange> getValueRange() const;
+	std::set<std::shared_ptr<SudokuValue>, SudokuValueLT> getValidValues(size_t column, size_t row);
+	const std::shared_ptr<SudokuValueRange>& getValueRange() const;
 	std::wstring toString();
 	std::wstring toStringOnlyEntries();
 };
