@@ -4,10 +4,12 @@
 */
 #ifndef HSudokuValueRange
 #define HSudokuValueRange
+#include "SudokuValue.h"
+
 #include <memory>
 #include <sstream>
 #include <set>
-#include "SudokuValue.h"
+
 class SudokuValueRange : public std::enable_shared_from_this<SudokuValueRange> {
 public:
 	virtual std::shared_ptr<SudokuValue> getMin() const = 0;

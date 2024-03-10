@@ -3,6 +3,7 @@
 */
 #include "SudokuValueEmojiRange.h"
 #include "SudokuValueEmoji.h"
+
 SudokuValueEmojiRange::SudokuValueEmojiRange() :
 	m_invalid{ 0 },
 	m_count{ 0 }

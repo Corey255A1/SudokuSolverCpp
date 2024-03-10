@@ -4,9 +4,10 @@
  */
 #ifndef HSudokuValueIntRange
 #define HSudokuValueIntRange
-#include <map>
 #include "SudokuValue.h"
 #include "SudokuValueRange.h"
+
+#include <map>
 
 class SudokuValueIntRange : public SudokuValueRange
 {

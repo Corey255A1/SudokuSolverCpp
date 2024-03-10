@@ -6,10 +6,11 @@
 
 #ifndef HSudokuBoard
 #define HSudokuBoard
+#include "SudokuCell.h"
+
 #include <set>
 #include <vector>
 #include <string>
-#include "SudokuCell.h"
 
 class SudokuBoard {
 private:

@@ -2,9 +2,10 @@
 * WunderVision 2024
 * Use the backtrack algorithm to solve a sudoku board
 */
-#include <stdexcept>
 #include "SudokuBacktrack.h"
 #include "SudokuValueRange.h"
+
+#include <stdexcept>
 
 std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::shared_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue)
 {

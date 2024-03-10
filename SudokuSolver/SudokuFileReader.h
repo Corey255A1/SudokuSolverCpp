@@ -2,13 +2,13 @@
 * WunderVision 2024
 * Read Sudoku Board from a file and generate a Sudoku Board Class
 */
+#ifndef HSudokuFileReader
+#define HSudokuFileReader
+#include "SudokuBoard.h"
+#include "SudokuValueRange.h"
 
 #include <string>
 #include <memory>
-#include "SudokuBoard.h"
-#include "SudokuValueRange.h"
-#ifndef HSudokuFileReader
-#define HSudokuFileReader
 class SudokuFileReader {
 private:
 	struct Header {

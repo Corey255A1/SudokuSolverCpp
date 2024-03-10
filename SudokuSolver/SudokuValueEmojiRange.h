@@ -5,9 +5,11 @@
  */
 #ifndef HSudokuValueEmojiRange
 #define HSudokuValueEmojiRange
+#include "SudokuValueRange.h"
+
 #include <vector>
 #include <map>
-#include "SudokuValueRange.h"
+
 class SudokuValueEmojiRange : public SudokuValueRange
 {
 private:

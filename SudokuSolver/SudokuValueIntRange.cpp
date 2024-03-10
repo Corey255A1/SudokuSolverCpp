@@ -1,5 +1,6 @@
 #include "SudokuValueIntRange.h"
 #include "SudokuValueInt.h"
+
 SudokuValueIntRange::SudokuValueIntRange() : 
 	m_invalid{0}, m_count{ 0 },
 	m_min{ 0 }, m_max{ 0 }

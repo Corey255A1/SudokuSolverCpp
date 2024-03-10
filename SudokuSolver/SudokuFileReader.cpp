@@ -1,6 +1,10 @@
 /*
 * WunderVision 2024
 */
+#include "SudokuFileReader.h"
+#include "SudokuValueIntRange.h"
+#include "SudokuValueEmojiRange.h"
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -8,11 +12,6 @@
 #include <locale>
 #include <codecvt>
 #include <algorithm>
-
-#include "SudokuFileReader.h"
-#include "SudokuValueIntRange.h"
-#include "SudokuValueEmojiRange.h"
-
 
 // Because files may have different line endings and getline might not match the line ending type
 void trim(std::wstring& stringToTrim) {

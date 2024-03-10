@@ -6,6 +6,7 @@
 #define HSudokuValueInt
 #include "SudokuValue.h"
 #include "SudokuValueRange.h"
+
 class SudokuValueInt : public SudokuValue
 {
 private:

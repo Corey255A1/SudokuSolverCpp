@@ -5,8 +5,9 @@
 */
 #ifndef HSudokuBacktrack
 #define HSudokuBacktrack
-#include <memory>
 #include "SudokuBoard.h"
+
+#include <memory>
 
 class SudokuBacktrack {
 private:

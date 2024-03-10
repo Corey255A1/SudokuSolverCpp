@@ -1,12 +1,14 @@
 /*
 * WunderVision 2024
 */
+#include "SudokuBoard.h"
+#include "SudokuValueRange.h"
+
 #include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_set>
-#include "SudokuBoard.h"
-#include "SudokuValueRange.h"
+
 size_t SudokuBoard::findBoxSize(size_t size) {
 	if (size < 4) { return -1; }
 	if (size == 4) { return 2; }

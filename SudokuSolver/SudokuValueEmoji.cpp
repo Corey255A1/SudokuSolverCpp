@@ -2,9 +2,10 @@
 * WunderVision 2024
 * an Emoji/String based SudokuValue
 */
-
 #include "SudokuValueEmoji.h"
+
 #include <exception>
+
 const SudokuValueEmoji& SudokuValueEmoji::castTo(const SudokuValue& value) {
 	const auto* sudokuValue = dynamic_cast<const SudokuValueEmoji*>(&value);
 	if (sudokuValue == nullptr) { throw std::runtime_error("Invalid Sudoku Value Cast: To Int"); }
