@@ -1,10 +1,10 @@
 ﻿/*
-* WunderVision 2024
-* A complex Sudoku Solver
-* It can read in more than just numbers,
-* it can parse boards made of emojis and
-* process boards that are different sizes than 9x9
-*/
+ * WunderVision 2024
+ * A complex Sudoku Solver
+ * It can read in more than just numbers,
+ * it can parse boards made of emojis and
+ * process boards that are different sizes than 9x9
+ */
 
 #include "SudokuSolver.h"
 #include "SudokuFileReader.h"
@@ -18,12 +18,13 @@
 #include <io.h>
 #endif
 
-void getInteractiveFilePath(std::string& filePath) {
+void getInteractiveFilePath(std::string &filePath)
+{
 	std::wcout << L"Sudoku File path: ";
 	std::getline(std::cin, filePath);
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	std::setlocale(LC_ALL, "");
 #ifdef _WINDOWS
@@ -32,10 +33,10 @@ int main(int argc, char** argv)
 #endif
 	std::string filePath;
 	bool isInteractive = false;
-	std::wostream* verboseOutput = nullptr;
-	if (argc >= 2) 
+	std::wostream *verboseOutput = nullptr;
+	if (argc >= 2)
 	{
-		for (int argIndex = 1; argIndex < argc; argIndex++) 
+		for (int argIndex = 1; argIndex < argc; argIndex++)
 		{
 			if (std::string(argv[argIndex]) == "-v")
 			{
@@ -79,16 +80,21 @@ int main(int argc, char** argv)
 			auto endTime = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
 			double seconds = static_cast<double>(duration.count()) / 1000000.0;
-			std::wcout << std::endl << L"-- Solution Found in " << seconds << L"s!! --" << std::endl;
+			std::wcout << std::endl
+					   << L"-- Solution Found in " << seconds << L"s!! --" << std::endl;
 			std::wcout << board->toString();
-			std::wcout << L"--Enter These Values--\n" << board->toStringOnlyEntries();
+			std::wcout << L"--Enter These Values--\n"
+					   << board->toStringOnlyEntries();
 		}
 		catch (std::exception e)
 		{
 			std::wcerr << e.what() << std::endl;
 		}
 
-		if (!isInteractive) { break; }
+		if (!isInteractive)
+		{
+			break;
+		}
 		getInteractiveFilePath(filePath);
 	}
 

@@ -1,15 +1,15 @@
 /*
-* WunderVision 2024
-* Use the backtrack algorithm to solve a sudoku board
-*/
+ * WunderVision 2024
+ * Use the backtrack algorithm to solve a sudoku board
+ */
 #include "SudokuBacktrack.h"
 #include "SudokuValueRange.h"
 
 #include <stdexcept>
 
-std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::shared_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue)
+std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<std::shared_ptr<SudokuValue>, SudokuValueLT> &validValues, const SudokuValue *currentValue)
 {
-	for (const auto& validValue : validValues)
+	for (const auto &validValue : validValues)
 	{
 		if (currentValue->lessThan(validValue.get()))
 		{
@@ -19,16 +19,16 @@ std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<s
 	return currentValue->getValueRange()->getDefault();
 }
 
-SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) :
-	m_board(board),
-	m_currentRow(0),
-	m_currentColumn(0)
+SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) : m_board(board),
+																	   m_currentRow(0),
+																	   m_currentColumn(0)
 {
 }
 
 void SudokuBacktrack::backTrack()
 {
-	do {
+	do
+	{
 		if (m_currentColumn == 0)
 		{
 			if (m_currentRow == 0)
@@ -42,14 +42,15 @@ void SudokuBacktrack::backTrack()
 	} while (m_board->getCell(m_currentColumn, m_currentRow).isReadOnly());
 }
 
-void SudokuBacktrack::reset() {
+void SudokuBacktrack::reset()
+{
 	m_currentRow = 0;
 	m_currentColumn = 0;
 	for (int row = 0; row < m_board->getSize(); row++)
 	{
 		for (int column = 0; column < m_board->getSize(); column++)
 		{
-			SudokuCell& cell = m_board->getCell(column, row);
+			SudokuCell &cell = m_board->getCell(column, row);
 			if (!cell.isReadOnly())
 			{
 				cell.clear();
@@ -60,18 +61,20 @@ void SudokuBacktrack::reset() {
 
 bool SudokuBacktrack::takeStep()
 {
-	if (m_currentRow >= m_board->getSize()) { return true; }
+	if (m_currentRow >= m_board->getSize())
+	{
+		return true;
+	}
 
 	if (m_currentColumn < m_board->getSize())
 	{
-		SudokuCell& cell = m_board->getCell(m_currentColumn, m_currentRow);
+		SudokuCell &cell = m_board->getCell(m_currentColumn, m_currentRow);
 		if (cell.isReadOnly())
 		{
 			m_currentColumn++;
 			return false;
 		}
-		const auto& cellValue = cell.value();
-
+		const auto &cellValue = cell.value();
 
 		std::set<std::shared_ptr<SudokuValue>, SudokuValueLT> validValues = m_board->getValidValues(m_currentColumn, m_currentRow);
 		if (validValues.size() == 0)
@@ -108,31 +111,33 @@ bool SudokuBacktrack::takeStep()
 	}
 
 	return m_currentRow >= m_board->getSize();
-
 }
 
-
-bool SudokuBacktrack::solve(std::wostream* output)
+bool SudokuBacktrack::solve(std::wostream *output)
 {
 	reset();
-	try {
+	try
+	{
 		if (output != nullptr)
 		{
-			auto& outputRef = *output;
+			auto &outputRef = *output;
 			outputRef << "\x1b[2J\x1b[?25l";
-			while (!takeStep()) {
+			while (!takeStep())
+			{
 				outputRef << "\x1b[0;0H";
 				outputRef << m_board->toString();
 			}
 			outputRef << "\x1b[2J\x1b[?25h";
 		}
-		else 
+		else
 		{
-			while (!takeStep()) {}
+			while (!takeStep())
+			{
+			}
 		}
-
 	}
-	catch (std::exception e) {
+	catch (std::exception e)
+	{
 		return false;
 	}
 
