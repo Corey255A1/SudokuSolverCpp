@@ -112,11 +112,25 @@ bool SudokuBacktrack::takeStep()
 }
 
 
-bool SudokuBacktrack::solve()
+bool SudokuBacktrack::solve(std::wostream* output)
 {
 	reset();
 	try {
-		while (!takeStep()) {}
+		if (output != nullptr)
+		{
+			auto& outputRef = *output;
+			outputRef << "\x1b[2J\x1b[?25l";
+			while (!takeStep()) {
+				outputRef << "\x1b[0;0H";
+				outputRef << m_board->toString();
+			}
+			outputRef << "\x1b[2J\x1b[?25h";
+		}
+		else 
+		{
+			while (!takeStep()) {}
+		}
+
 	}
 	catch (std::exception e) {
 		return false;

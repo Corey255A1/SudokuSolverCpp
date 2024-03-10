@@ -2,7 +2,7 @@
 * WunderVision 2024
 * A complex Sudoku Solver
 * It can read in more than just numbers,
-* it can parse boards made of emojis and 
+* it can parse boards made of emojis and
 * process boards that are different sizes than 9x9
 */
 
@@ -12,6 +12,7 @@
 
 #include <iostream>
 #include <locale>
+#include <chrono>
 #ifdef _WINDOWS
 #include <fcntl.h>
 #include <io.h>
@@ -31,36 +32,59 @@ int main(int argc, char** argv)
 #endif
 	std::string filePath;
 	bool isInteractive = false;
-	if (argc >= 2) {
-		filePath.assign(argv[1]);
+	std::wostream* verboseOutput = nullptr;
+	if (argc >= 2) 
+	{
+		for (int argIndex = 1; argIndex < argc; argIndex++) 
+		{
+			if (std::string(argv[argIndex]) == "-v")
+			{
+				verboseOutput = &std::wcout;
+			}
+			else
+			{
+				filePath.assign(argv[argIndex]);
+			}
+		}
 	}
-	else {
+	else
+	{
 		getInteractiveFilePath(filePath);
 		isInteractive = true;
 	}
 
-	while (!filePath.empty()) {
-		try {
+	while (!filePath.empty())
+	{
+		try
+		{
 			std::shared_ptr<SudokuBoard> board = std::move(SudokuFileReader::read(filePath));
 			std::wcout << board->toString();
-			if (!board->isValid()) {
+			if (!board->isValid())
+			{
 				std::wcout << L"Sudoku Board is not valid\n";
-				if (isInteractive) {
+				if (isInteractive)
+				{
 					getInteractiveFilePath(filePath);
 					continue;
 				}
 				break;
 			}
 			SudokuBacktrack backTrack(board);
-			std::wcout << "Looking for solution..." << std::endl;
-			if (!backTrack.solve()) {
+			std::wcout << L"Looking for solution..." << std::endl;
+			auto startTime = std::chrono::high_resolution_clock::now();
+			if (!backTrack.solve(verboseOutput))
+			{
 				std::wcout << L"Sudoku Board could not be solved" << std::endl;
 			}
-			std::wcout << std::endl << L"-- Solution Found! --" << std::endl;
+			auto endTime = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endTime - startTime);
+			double seconds = static_cast<double>(duration.count()) / 1000000.0;
+			std::wcout << std::endl << L"-- Solution Found in " << seconds << L"s!! --" << std::endl;
 			std::wcout << board->toString();
 			std::wcout << L"--Enter These Values--\n" << board->toStringOnlyEntries();
 		}
-		catch (std::exception e) {
+		catch (std::exception e)
+		{
 			std::wcerr << e.what() << std::endl;
 		}
 

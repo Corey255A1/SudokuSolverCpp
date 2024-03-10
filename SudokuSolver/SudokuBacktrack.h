@@ -19,7 +19,7 @@ private:
 	static std::shared_ptr<SudokuValue> getNextValidValue(const std::set<std::shared_ptr<SudokuValue>, SudokuValueLT>& validValues, const SudokuValue* currentValue);
 public:
 	SudokuBacktrack(std::shared_ptr<SudokuBoard> board);
-	bool solve();
+	bool solve(std::wostream* output = nullptr);
 	bool takeStep();
 	void reset();
 };
