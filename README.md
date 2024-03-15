@@ -1,5 +1,5 @@
 # Not just another Sudoku Solver!
-A completely over engineered Sudoku Solver that uses the backtrack algorithm. 
+An extremely over engineered Sudoku Solver that uses the backtrack algorithm. 
 ```
 1 5 x x x x x 9 8
 9 2 x x 5 x x 4 1
