@@ -1,5 +1,7 @@
 # Not just another Sudoku Solver!
-An extremely over engineered Sudoku Solver that uses the backtrack algorithm. 
+An extremely over engineered Sudoku Solver that uses the backtrack algorithm.
+![emoji_solve_small_short](https://github.com/Corey255A1/SudokuSolverCpp/assets/3460291/1b3b23b1-afbd-4581-bc39-0404fc901b44)
+
 ```
 1 5 x x x x x 9 8
 9 2 x x 5 x x 4 1
