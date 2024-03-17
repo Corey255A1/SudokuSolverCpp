@@ -231,9 +231,9 @@ bool SudokuBoard::isValid()
 				return false;
 			}
 
-			rows[row].insert(cell.value()->makeCopy());
-			columns[column].insert(cell.value()->makeCopy());
-			boxes[boxIndex].insert(cell.value()->makeCopy());
+			rows[row].insert(cell.value());
+			columns[column].insert(cell.value());
+			boxes[boxIndex].insert(cell.value());
 		}
 	}
 	return true;
