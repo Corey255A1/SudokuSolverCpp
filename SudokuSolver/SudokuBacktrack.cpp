@@ -19,9 +19,10 @@ std::shared_ptr<SudokuValue> SudokuBacktrack::getNextValidValue(const std::set<s
 	return currentValue->getValueRange()->getDefault();
 }
 
-SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) : m_board(board),
-																	   m_currentRow(0),
-																	   m_currentColumn(0)
+SudokuBacktrack::SudokuBacktrack(std::shared_ptr<SudokuBoard> board) :
+	m_board(board),
+	m_currentRow(0),
+	m_currentColumn(0)
 {
 }
 
