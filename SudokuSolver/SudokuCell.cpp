@@ -4,11 +4,13 @@
 #include "SudokuCell.h"
 #include "SudokuValueRange.h"
 
-SudokuCell::SudokuCell(std::shared_ptr<SudokuValue> value, bool isReadOnly) : m_value(std::move(value)),
-																			  m_isReadOnly(isReadOnly) {}
+SudokuCell::SudokuCell(std::shared_ptr<SudokuValue> value, bool isReadOnly) : 
+	m_value(std::move(value)),
+	m_isReadOnly(isReadOnly) {}
 
-SudokuCell::SudokuCell(const SudokuCell &copy) : m_isReadOnly{copy.m_isReadOnly},
-												 m_value{copy.m_value->makeCopy()} {}
+SudokuCell::SudokuCell(const SudokuCell &copy) : 
+	m_isReadOnly{copy.m_isReadOnly},
+    m_value{copy.m_value->makeCopy()} {}
 
 SudokuCell &SudokuCell::operator=(const SudokuCell &copy)
 {

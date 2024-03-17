@@ -31,10 +31,11 @@ size_t SudokuBoard::findBoxSize(size_t size)
 	return square == size ? squareCheck : 0;
 }
 
-SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWidth, size_t boxHeight) : m_size{values->getCount()},
-																										m_valueRange{values},
-																										m_boxWidth{boxWidth},
-																										m_boxHeight{boxHeight}
+SudokuBoard::SudokuBoard(std::shared_ptr<SudokuValueRange> values, size_t boxWidth, size_t boxHeight) :
+	m_size{values->getCount()},
+	m_valueRange{values},
+	m_boxWidth{boxWidth},
+	m_boxHeight{boxHeight}
 {
 	if (m_size == 0)
 	{
